@@ -48,6 +48,29 @@ interface ElectronAPI {
   writeTerminal: (id: string, text: string) => Promise<boolean>
   destroyTerminal: (id: string) => Promise<boolean>
   onTerminalData: (callback: (id: string, text: string) => void) => () => void
+  checkForUpdates: () => Promise<boolean>
+  downloadUpdate: () => Promise<boolean>
+  installUpdate: () => Promise<void>
+  getCurrentVersion: () => Promise<string>
+  onUpdateStatus: (callback: (data: { status: string }) => void) => () => void
+  onUpdateAvailable: (callback: (data: any) => void) => () => void
+  onUpdateProgress: (callback: (data: { percent: number; bytesPerSecond: number; transferred: number; total: number }) => void) => () => void
+  onUpdateError: (callback: (data: { message: string }) => void) => () => void
+  getSystemInfo: () => Promise<{
+    appVersion: string
+    electronVersion: string
+    chromeVersion: string
+    nodeVersion: string
+    v8Version: string
+    osPlatform: string
+    osRelease: string
+    osType: string
+    osArch: string
+    cpuCores: number
+    totalMemory: string
+    flexSdkPath: string
+    ffdecPath: string
+  }>
   getTemplates: () => Promise<{ id: string; name: string; description: string }[]>
   createProjectTemplate: (projectRoot: string, projectName: string, templateId?: string) => Promise<boolean>
   getToolbarActions: (projectRoot?: string) => Promise<{ id: string; label: string; icon: string; type: string; payload: string; position?: number }[]>

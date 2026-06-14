@@ -7,6 +7,7 @@ import os from 'os'
 import { registerFfdecIpc, getOrExtractAssetPath } from './services/ffdec-service'
 import { loadConfig, saveConfig, getPortablePath } from './services/config-service'
 import { detectNinjasageProject } from './services/project-service'
+import { initUpdater, setUpdaterWindow, checkForUpdates, downloadUpdate, quitAndInstall } from './services/updater-service'
 import { As3DapAdapter } from './dap/as3-adapter'
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
@@ -127,6 +128,7 @@ function createWindow() {
   mainWindow.on('ready-to-show', () => {
     mainWindow?.webContents.setZoomLevel(0)
     mainWindow?.show()
+    setUpdaterWindow(mainWindow!)
   })
 
   if (process.env.VITE_DEV_SERVER_URL) {
@@ -1237,7 +1239,53 @@ ipcMain.handle('debug:variables', async (event, reference: number): Promise<{ va
   return { variables: [] }
 })
 
+// Updater IPC handlers
+ipcMain.handle('updater:check', async () => {
+  try {
+    await checkForUpdates()
+    return true
+  } catch (err: any) {
+    return false
+  }
+})
+
+ipcMain.handle('updater:download', async () => {
+  try {
+    await downloadUpdate()
+    return true
+  } catch (err: any) {
+    return false
+  }
+})
+
+ipcMain.handle('updater:install', () => {
+  quitAndInstall()
+})
+
+ipcMain.handle('updater:version', () => {
+  return app.getVersion()
+})
+
+ipcMain.handle('system:info', () => {
+  return {
+    appVersion: app.getVersion(),
+    electronVersion: process.versions.electron || '',
+    chromeVersion: process.versions.chrome || '',
+    nodeVersion: process.versions.node || '',
+    v8Version: process.versions.v8 || '',
+    osPlatform: process.platform,
+    osRelease: os.release(),
+    osType: os.type(),
+    osArch: os.arch(),
+    cpuCores: os.cpus().length,
+    totalMemory: Math.round(os.totalmem() / 1024 / 1024 / 1024) + ' GB',
+    flexSdkPath: getPortablePath('bin/flex-sdk'),
+    ffdecPath: getPortablePath('bin/ffdec')
+  }
+})
+
   registerFfdecIpc()
+  initUpdater()
   createMenu()
   createWindow()
 })

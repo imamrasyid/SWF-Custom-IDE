@@ -10,6 +10,11 @@ files:
 extraResources:
   - from: bin
     to: bin
+publish:
+  provider: github
+  owner: imamrasyid
+  repo: SWF-Custom-IDE
+  releaseType: release
 win:
   target:
     - target: nsis
@@ -20,6 +25,7 @@ nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
   createDesktopShortcut: true
+  artifactName: ${productName}-${version}-Setup.${ext}
 mac:
   target:
     - dmg

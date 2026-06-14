@@ -17,6 +17,7 @@ import BottomPanel from './components/layout/BottomPanel'
 import StatusBar from './components/layout/StatusBar'
 import CommandPalette from './components/layout/CommandPalette'
 import ErrorBoundary from './components/layout/ErrorBoundary'
+import UpdateBanner from './components/layout/UpdateBanner'
 
 export default function App() {
   const swfPath = useAppStore((s) => s.swfPath)
@@ -199,6 +200,49 @@ export default function App() {
     }
   }, [])
 
+  // Update event listeners
+  useEffect(() => {
+    window.electronAPI.getCurrentVersion().then((v) => {
+      useAppStore.getState().setCurrentVersion(v)
+    })
+
+    const unsubStatus = window.electronAPI.onUpdateStatus(({ status }) => {
+      useAppStore.getState().setUpdateStatus(status as any)
+      if (status === 'available') {
+        useAppStore.getState().setShowUpdateBanner(true)
+      }
+      if (status === 'downloaded') {
+        useAppStore.getState().setShowUpdateBanner(true)
+      }
+    })
+
+    const unsubAvailable = window.electronAPI.onUpdateAvailable((info) => {
+      useAppStore.getState().setUpdateInfo(info)
+    })
+
+    const unsubProgress = window.electronAPI.onUpdateProgress((progress) => {
+      useAppStore.getState().setUpdateProgress(progress)
+    })
+
+    const unsubError = window.electronAPI.onUpdateError((err) => {
+      useAppStore.getState().setUpdateError(err.message)
+      useAppStore.getState().setUpdateStatus('error')
+    })
+
+    // Check for updates on startup (delay 5s)
+    const timer = setTimeout(() => {
+      useAppStore.getState().checkForUpdates()
+    }, 5000)
+
+    return () => {
+      unsubStatus()
+      unsubAvailable()
+      unsubProgress()
+      unsubError?.()
+      clearTimeout(timer)
+    }
+  }, [])
+
   // Warn before close if unsaved changes
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -312,6 +356,7 @@ export default function App() {
       <CommandPalette />
       <LoadingOverlay />
       <PromptDialog />
+      <UpdateBanner />
       <ToastContainer toasts={toasts} onRemove={remove} />
     </div>
   )

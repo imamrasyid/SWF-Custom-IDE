@@ -11,6 +11,7 @@ import AmfBuilderModule from '../../modules/amf-builder/AmfBuilderModule'
 import SimulatorModule from '../../modules/simulator/SimulatorModule'
 import SoundStudioModule from '../../modules/sound-studio/SoundStudioModule'
 import PanelStudioModule from '../../modules/panel-studio/PanelStudioModule'
+import AboutModule from '../../modules/about/AboutModule'
 
 const modules: Record<string, React.FC> = {
   explorer: ExplorerModule,
@@ -24,7 +25,8 @@ const modules: Record<string, React.FC> = {
   'amf-builder': AmfBuilderModule,
   simulator: SimulatorModule,
   'sound-studio': SoundStudioModule,
-  'panel-studio': PanelStudioModule
+  'panel-studio': PanelStudioModule,
+  about: AboutModule
 }
 
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Settings, Search, Sliders, Monitor, Code, Cpu, Save, RotateCcw, FileCode, AlertCircle, AlertTriangle, Keyboard, Edit3, Download, Upload } from 'lucide-react'
+import { Settings, Search, Sliders, Monitor, Code, Cpu, Save, RotateCcw, FileCode, AlertCircle, AlertTriangle, Keyboard, Edit3, Download, Upload, Info, RefreshCw } from 'lucide-react'
 import Editor from '@monaco-editor/react'
 import { useToast } from '../../hooks/useToast'
 import { useAppStore } from '../../stores/app-store'
@@ -857,6 +857,45 @@ export default function SettingsModule() {
                       <span>{activeTab === 'user' ? "Apply Configurations" : "Save Workspace Settings"}</span>
                     </button>
                   </div>
+
+                  {/* About & Updates Section */}
+                  {activeTab === 'user' && (
+                    <div className="mt-8 border-t border-slate-900/60 pt-6">
+                      <div className="flex items-center gap-2 mb-4">
+                        <Info size={15} className="text-indigo-400" />
+                        <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">About & Updates</h3>
+                      </div>
+                      <div className="bg-slate-950/40 border border-slate-900/60 rounded-xl p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <div>
+                            <p className="text-xs text-slate-400">NinjaSage Modding Toolkit</p>
+                            <p className="text-[10px] text-slate-600 font-mono mt-0.5">
+                              Version {useAppStore.getState().currentVersion || '1.0.0'}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => useAppStore.getState().checkForUpdates()}
+                            disabled={useAppStore.getState().updateStatus === 'checking'}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold bg-slate-900/80 hover:bg-slate-800 border border-slate-800 rounded-lg text-slate-300 hover:text-white transition-colors cursor-pointer disabled:opacity-50"
+                          >
+                            <RefreshCw size={11} className={useAppStore.getState().updateStatus === 'checking' ? 'animate-spin' : ''} />
+                            Check for Updates
+                          </button>
+                        </div>
+                        {useAppStore.getState().updateStatus === 'downloaded' && (
+                          <div className="flex items-center justify-between mt-2 p-2 bg-emerald-950/30 border border-emerald-900/30 rounded-lg">
+                            <span className="text-[11px] text-emerald-400">Update downloaded and ready to install</span>
+                            <button
+                              onClick={() => useAppStore.getState().installUpdate()}
+                              className="px-2.5 py-1 text-[10px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded cursor-pointer"
+                            >
+                              Restart Now
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="text-center py-12 text-slate-600 text-xs select-none">

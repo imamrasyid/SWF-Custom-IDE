@@ -115,6 +115,33 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return () => {
       ipcRenderer.removeListener('terminal:data', subscription)
     }
-  }
+  },
+
+  // Updater
+  checkForUpdates: () => ipcRenderer.invoke('updater:check'),
+  downloadUpdate: () => ipcRenderer.invoke('updater:download'),
+  installUpdate: () => ipcRenderer.invoke('updater:install'),
+  getCurrentVersion: () => ipcRenderer.invoke('updater:version'),
+  onUpdateStatus: (callback: (data: { status: string }) => void) => {
+    const subscription = (_event: any, data: { status: string }) => callback(data)
+    ipcRenderer.on('update:status', subscription)
+    return () => { ipcRenderer.removeListener('update:status', subscription) }
+  },
+  onUpdateAvailable: (callback: (data: any) => void) => {
+    const subscription = (_event: any, data: any) => callback(data)
+    ipcRenderer.on('update:available', subscription)
+    return () => { ipcRenderer.removeListener('update:available', subscription) }
+  },
+  onUpdateProgress: (callback: (data: { percent: number; bytesPerSecond: number; transferred: number; total: number }) => void) => {
+    const subscription = (_event: any, data: any) => callback(data)
+    ipcRenderer.on('update:progress', subscription)
+    return () => { ipcRenderer.removeListener('update:progress', subscription) }
+  },
+  onUpdateError: (callback: (data: { message: string }) => void) => {
+    const subscription = (_event: any, data: { message: string }) => callback(data)
+    ipcRenderer.on('update:error', subscription)
+    return () => { ipcRenderer.removeListener('update:error', subscription) }
+  },
+  getSystemInfo: () => ipcRenderer.invoke('system:info')
 })
 

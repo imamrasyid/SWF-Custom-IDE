@@ -13,6 +13,8 @@ import { createDebugSlice } from './slices/debug-slice'
 import type { DebugSlice } from './slices/debug-slice'
 import { createSnippetsSlice } from './slices/snippets-slice'
 import type { SnippetsSlice } from './slices/snippets-slice'
+import { createUpdateSlice } from './slices/update-slice'
+import type { UpdateSlice } from './slices/update-slice'
 
 export type ModuleName =
   | 'explorer'
@@ -29,6 +31,7 @@ export type ModuleName =
   | 'settings'
   | 'dependency'
   | 'simulator'
+  | 'about'
 
 export type EditorDiagnostic = {
   line: number
@@ -52,7 +55,8 @@ export interface AppState
     TerminalSlice,
     NotificationsSlice,
     DebugSlice,
-    SnippetsSlice {
+    SnippetsSlice,
+    UpdateSlice {
   activeModule: ModuleName | null
   setActiveModule: (module: string) => void
 }
@@ -67,5 +71,6 @@ export const useAppStore = create<AppState>()((...a) => ({
   ...createTerminalSlice(...a),
   ...createNotificationsSlice(...a),
   ...createDebugSlice(...a),
-  ...createSnippetsSlice(...a)
+  ...createSnippetsSlice(...a),
+  ...createUpdateSlice(...a)
 }))

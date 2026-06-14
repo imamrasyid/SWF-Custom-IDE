@@ -94,12 +94,6 @@ const menus: MenuGroup[] = [
       { label: 'Go to Definition', action: 'go-to-definition', accelerator: 'F12' },
       { label: 'Go to References', action: 'go-to-references', accelerator: 'Shift+F12' }
     ]
-  },
-  {
-    label: 'Help',
-    items: [
-      { label: 'About SWF IDE', action: 'about' }
-    ]
   }
 ]
 

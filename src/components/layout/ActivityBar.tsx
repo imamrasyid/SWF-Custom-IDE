@@ -1,4 +1,4 @@
-import { Files, Search, Hammer, Settings, LogOut, Network, Play, Database, Layout } from 'lucide-react'
+import { Files, Search, Hammer, Settings, LogOut, Network, Play, Database, Layout, Info } from 'lucide-react'
 import { useAppStore } from '../../stores/app-store'
 
 export default function ActivityBar() {
@@ -114,6 +114,18 @@ export default function ActivityBar() {
         >
           <Settings size={20} />
           <span className="activity-bar-tooltip">Settings</span>
+        </button>
+
+        {/* About */}
+        <button
+          onClick={() => {
+            useAppStore.getState().setActiveModule('about')
+            useAppStore.getState().toggleSidebar(false)
+          }}
+          className={`activity-bar-btn group ${activeModule === 'about' ? 'active' : ''}`}
+        >
+          <Info size={20} />
+          <span className="activity-bar-tooltip">About</span>
         </button>
 
         {/* Close/Eject SWF (bottom) */}
