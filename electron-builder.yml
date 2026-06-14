@@ -1,0 +1,32 @@
+appId: com.ninjasage.modding-toolkit
+productName: NinjaSage Modding Toolkit
+copyright: Copyright © 2026
+directories:
+  output: release
+  buildResources: resources
+files:
+  - dist-electron
+  - dist
+extraResources:
+  - from: bin
+    to: bin
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: resources/icon.ico
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+mac:
+  target:
+    - dmg
+    - zip
+  icon: resources/icon.icns
+linux:
+  target:
+    - AppImage
+    - deb
+  icon: resources/icon.png
