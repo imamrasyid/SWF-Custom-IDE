@@ -15,6 +15,10 @@ import { createSnippetsSlice } from './slices/snippets-slice'
 import type { SnippetsSlice } from './slices/snippets-slice'
 import { createUpdateSlice } from './slices/update-slice'
 import type { UpdateSlice } from './slices/update-slice'
+import { createFileSlice } from './slices/file-slice'
+import type { FileSlice } from './slices/file-slice'
+import { createGitSlice } from './slices/git-slice'
+import type { GitSlice } from './slices/git-slice'
 
 export type ModuleName =
   | 'explorer'
@@ -56,7 +60,9 @@ export interface AppState
     NotificationsSlice,
     DebugSlice,
     SnippetsSlice,
-    UpdateSlice {
+    UpdateSlice,
+    FileSlice,
+    GitSlice {
   activeModule: ModuleName | null
   setActiveModule: (module: string) => void
 }
@@ -72,5 +78,9 @@ export const useAppStore = create<AppState>()((...a) => ({
   ...createNotificationsSlice(...a),
   ...createDebugSlice(...a),
   ...createSnippetsSlice(...a),
-  ...createUpdateSlice(...a)
+  ...createUpdateSlice(...a),
+  ...createFileSlice(...a),
+  ...createGitSlice(...a)
 }))
+
+useAppStore.getState().loadPersistedState()

@@ -6,6 +6,7 @@ import MenuBar from './components/layout/MenuBar'
 import DebugToolbar from './components/layout/DebugToolbar'
 import ExplorerPanel from './components/layout/ExplorerPanel'
 import SearchPanel from './components/layout/SearchPanel'
+import SourceControlPanel from './components/explorer/SourceControlPanel'
 import ContentPanel from './components/layout/ContentPanel'
 import WelcomePage from './modules/welcome/WelcomePage'
 import LoadingOverlay from './components/layout/LoadingOverlay'
@@ -324,7 +325,7 @@ export default function App() {
         {(swfPath || projectRoot) ? (
           <>
             <ActivityBar />
-            {isSidebarOpen && (activityTab === 'explorer' || activityTab === 'search') && (
+            {isSidebarOpen && (activityTab === 'explorer' || activityTab === 'search' || activityTab === 'source-control') && (
               <div 
                 className="relative flex shrink-0 h-full border-r border-slate-900/80" 
                 style={{ width: `${sidebarWidth}px` }}
@@ -332,6 +333,7 @@ export default function App() {
                 <ErrorBoundary fallbackTitle="Panel Error" fallbackMessage="The sidebar panel crashed.">
                   {activityTab === 'explorer' && <ExplorerPanel />}
                   {activityTab === 'search' && <SearchPanel />}
+                  {activityTab === 'source-control' && <SourceControlPanel />}
                 </ErrorBoundary>
                 {/* Sash resizer */}
                 <div 

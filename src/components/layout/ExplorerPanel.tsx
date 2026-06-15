@@ -3,6 +3,7 @@ import { Tree, NodeApi } from 'react-arborist'
 import { useAppStore } from '../../stores/app-store'
 import { useToast } from '../../hooks/useToast'
 import ContextMenu from './ContextMenu'
+import FileExplorer from '../explorer/FileExplorer'
 import { 
   ChevronDown, 
   ChevronRight, 
@@ -344,6 +345,10 @@ export default function ExplorerPanel() {
   const [assetsContainerRef, assetsHeight] = useContainerHeight()
   const [timelineExpanded, setTimelineExpanded] = useState(false)
   const [outlineExpanded, setOutlineExpanded] = useState(false)
+  const [projectFilesExpanded, setProjectFilesExpanded] = useState(() => {
+    const saved = localStorage.getItem('explorer:projectFilesExpanded')
+    return saved !== null ? saved === 'true' : true
+  })
   const localHistory = useAppStore((s) => s.localHistory)
   const isSplitActive = useAppStore((s) => s.isSplitActive)
   const focusedEditorGroup = useAppStore((s) => s.focusedEditorGroup)
@@ -380,6 +385,12 @@ export default function ExplorerPanel() {
     const next = !assetsExpanded
     setAssetsExpanded(next)
     localStorage.setItem('explorer:assetsExpanded', String(next))
+  }
+
+  const toggleProjectFiles = () => {
+    const next = !projectFilesExpanded
+    setProjectFilesExpanded(next)
+    localStorage.setItem('explorer:projectFilesExpanded', String(next))
   }
 
   const handleNewFileHeader = () => {
@@ -1133,6 +1144,22 @@ export default function ExplorerPanel() {
               ) : (
                 <div className="text-[11px] text-slate-600 italic px-3 py-1 select-none">No active editors.</div>
               )}
+            </div>
+          )}
+        </div>
+
+        {/* SECTION: PROJECT FILES */}
+        <div className={`flex flex-col min-h-0 overflow-hidden ${projectFilesExpanded ? 'flex-1' : 'shrink-0'}`}>
+          <button
+            onClick={toggleProjectFiles}
+            className="flex items-center gap-1.5 w-full text-left px-3.5 py-2 hover:bg-slate-900/40 text-slate-400 hover:text-slate-200 font-bold uppercase tracking-wider text-[10px] select-none"
+          >
+            {projectFilesExpanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
+            <span>Project Files</span>
+          </button>
+          {projectFilesExpanded && (
+            <div className="flex-1 overflow-hidden min-h-0" style={{ minHeight: 80 }}>
+              <FileExplorer />
             </div>
           )}
         </div>

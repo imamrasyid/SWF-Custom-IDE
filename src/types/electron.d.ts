@@ -46,8 +46,10 @@ interface ElectronAPI {
   onSimulatorLog: (callback: (text: string) => void) => () => void
   createTerminal: (id: string, cwd?: string) => Promise<boolean>
   writeTerminal: (id: string, text: string) => Promise<boolean>
-  destroyTerminal: (id: string) => Promise<boolean>
+  resizeTerminal: (id: string, cols: number, rows: number) => Promise<boolean>
+  killTerminal: (id: string) => Promise<boolean>
   onTerminalData: (callback: (id: string, text: string) => void) => () => void
+  onTerminalExit: (callback: (id: string, exitCode: number) => void) => () => void
   checkForUpdates: () => Promise<boolean>
   downloadUpdate: () => Promise<boolean>
   installUpdate: () => Promise<void>
@@ -71,6 +73,28 @@ interface ElectronAPI {
     flexSdkPath: string
     ffdecPath: string
   }>
+  fsReadTree: (dirPath: string, maxDepth?: number) => Promise<{ id: string; name: string; path: string; isDirectory: boolean; children?: any[]; size?: number; mtime?: number }[]>
+  fsReadDir: (dirPath: string) => Promise<{ name: string; isDirectory: boolean }[]>
+  fsReadFile: (filePath: string) => Promise<string | null>
+  fsWriteFile: (filePath: string, content: string) => Promise<boolean>
+  fsCreateDir: (dirPath: string) => Promise<boolean>
+  fsDeletePath: (targetPath: string) => Promise<boolean>
+  fsRename: (oldPath: string, newPath: string) => Promise<boolean>
+  fsStat: (targetPath: string) => Promise<{ isDirectory: boolean; isFile: boolean; size: number; mtime: number } | null>
+  fsExists: (targetPath: string) => Promise<boolean>
+  fsIcon: (name: string) => Promise<string>
+  fsOpenInExplorer: (targetPath: string) => Promise<boolean>
+  fsWatch: (watchId: string, dirPath: string) => Promise<boolean>
+  fsUnwatch: (watchId: string) => Promise<boolean>
+  fsCopy: (source: string, dest: string) => Promise<boolean>
+  dbGetState: (key: string) => Promise<string | null>
+  dbSetState: (key: string, value: string) => Promise<boolean>
+  dbGetAllState: () => Promise<Record<string, string>>
+  dbDeleteState: (key: string) => Promise<boolean>
+  watcherStart: (watchId: string, dirPath: string, patterns?: string[]) => Promise<boolean>
+  watcherStop: (watchId: string) => Promise<boolean>
+  watcherStopAll: () => Promise<boolean>
+  onWatcherChange: (callback: (watchId: string, type: string, path: string) => void) => () => void
   getTemplates: () => Promise<{ id: string; name: string; description: string }[]>
   createProjectTemplate: (projectRoot: string, projectName: string, templateId?: string) => Promise<boolean>
   getToolbarActions: (projectRoot?: string) => Promise<{ id: string; label: string; icon: string; type: string; payload: string; position?: number }[]>
@@ -97,6 +121,18 @@ interface ElectronAPI {
   panelsList: (dirPath: string) => Promise<{ name: string; path: string; size: number; mtime: number }[]>
   panelsWriteCode: (filePath: string, content: string) => Promise<boolean>
   panelsReadCode: (filePath: string) => Promise<string>
+  gitStatus: (dir: string) => Promise<{ branch: string; staged: string[]; modified: string[]; deleted: string[]; untracked: string[]; ahead: number; behind: number; isRepo: boolean }>
+  gitLog: (dir: string) => Promise<{ hash: string; message: string; author: string; date: string }[]>
+  gitDiff: (dir: string, file: string) => Promise<string>
+  gitDiffStaged: (dir: string) => Promise<string>
+  gitAdd: (dir: string, files: string[]) => Promise<boolean>
+  gitUnstage: (dir: string, files: string[]) => Promise<boolean>
+  gitCommit: (dir: string, message: string) => Promise<boolean>
+  gitBranches: (dir: string) => Promise<{ name: string; current: boolean }[]>
+  gitCheckout: (dir: string, branch: string) => Promise<boolean>
+  gitCreateBranch: (dir: string, name: string) => Promise<boolean>
+  gitPush: (dir: string) => Promise<{ success: boolean; message: string }>
+  gitPull: (dir: string) => Promise<{ success: boolean; message: string }>
 }
 
 interface Window {

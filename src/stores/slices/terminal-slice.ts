@@ -4,7 +4,6 @@ import type { AppState } from '../app-store'
 export interface TerminalInstance {
   id: string
   name: string
-  lines: string[]
   isActive: boolean
 }
 
@@ -17,8 +16,6 @@ export interface TerminalSlice {
   createTerminal: (name?: string) => string
   closeTerminal: (id: string) => void
   setActiveTerminal: (id: string) => void
-  addTerminalLine: (id: string, line: string) => void
-  clearTerminal: (id: string) => void
 }
 
 export const createTerminalSlice: StateCreator<AppState, [], [], TerminalSlice> = (set, get) => ({
@@ -43,7 +40,6 @@ export const createTerminalSlice: StateCreator<AppState, [], [], TerminalSlice> 
     const newTerminal: TerminalInstance = {
       id,
       name: terminalName,
-      lines: [],
       isActive: true
     }
     set({
@@ -63,19 +59,5 @@ export const createTerminalSlice: StateCreator<AppState, [], [], TerminalSlice> 
     set({ terminals: filtered, activeTerminalId: newActiveId })
   },
 
-  setActiveTerminal: (id) => set({ activeTerminalId: id }),
-
-  addTerminalLine: (id, line) => set((state) => ({
-    terminals: state.terminals.map(t => 
-      t.id === id 
-        ? { ...t, lines: [...t.lines.slice(-999), line] }
-        : t
-    )
-  })),
-
-  clearTerminal: (id) => set((state) => ({
-    terminals: state.terminals.map(t => 
-      t.id === id ? { ...t, lines: [] } : t
-    )
-  }))
+  setActiveTerminal: (id) => set({ activeTerminalId: id })
 })

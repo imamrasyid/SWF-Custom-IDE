@@ -68,9 +68,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
       ipcRenderer.removeListener('simulator:log', subscription)
     }
   },
-  createTerminal: (id: string, cwd?: string) => ipcRenderer.invoke('terminal:create', id, cwd),
-  writeTerminal: (id: string, text: string) => ipcRenderer.invoke('terminal:write', id, text),
-  destroyTerminal: (id: string) => ipcRenderer.invoke('terminal:destroy', id),
+  createTerminal: (id: string, cwd?: string) => ipcRenderer.invoke('pty:create', id, cwd),
+  writeTerminal: (id: string, text: string) => ipcRenderer.invoke('pty:write', id, text),
+  resizeTerminal: (id: string, cols: number, rows: number) => ipcRenderer.invoke('pty:resize', id, cols, rows),
+  killTerminal: (id: string) => ipcRenderer.invoke('pty:kill', id),
   getTemplates: () => ipcRenderer.invoke('project:getTemplates'),
   createProjectTemplate: (projectRoot: string, projectName: string, templateId?: string) => ipcRenderer.invoke('project:createTemplate', projectRoot, projectName, templateId),
   getToolbarActions: (projectRoot?: string) => ipcRenderer.invoke('config:getToolbarActions', projectRoot),
@@ -111,10 +112,63 @@ contextBridge.exposeInMainWorld('electronAPI', {
   panelsReadCode: (filePath: string) => ipcRenderer.invoke('panels:readCode', filePath),
   onTerminalData: (callback: (id: string, text: string) => void) => {
     const subscription = (_event: any, id: string, text: string) => callback(id, text)
-    ipcRenderer.on('terminal:data', subscription)
+    ipcRenderer.on('pty:data', subscription)
     return () => {
-      ipcRenderer.removeListener('terminal:data', subscription)
+      ipcRenderer.removeListener('pty:data', subscription)
     }
+  },
+  onTerminalExit: (callback: (id: string, exitCode: number) => void) => {
+    const subscription = (_event: any, id: string, exitCode: number) => callback(id, exitCode)
+    ipcRenderer.on('pty:exit', subscription)
+    return () => {
+      ipcRenderer.removeListener('pty:exit', subscription)
+    }
+  },
+
+  // Filesystem
+  fsReadTree: (dirPath: string, maxDepth?: number) => ipcRenderer.invoke('fs:readTree', dirPath, maxDepth),
+  fsReadDir: (dirPath: string) => ipcRenderer.invoke('fs:readDir', dirPath),
+  fsReadFile: (filePath: string) => ipcRenderer.invoke('fs:readFile', filePath),
+  fsWriteFile: (filePath: string, content: string) => ipcRenderer.invoke('fs:writeFile', filePath, content),
+  fsCreateDir: (dirPath: string) => ipcRenderer.invoke('fs:createDir', dirPath),
+  fsDeletePath: (targetPath: string) => ipcRenderer.invoke('fs:deletePath', targetPath),
+  fsRename: (oldPath: string, newPath: string) => ipcRenderer.invoke('fs:rename', oldPath, newPath),
+  fsStat: (targetPath: string) => ipcRenderer.invoke('fs:stat', targetPath),
+  fsExists: (targetPath: string) => ipcRenderer.invoke('fs:exists', targetPath),
+  fsIcon: (name: string) => ipcRenderer.invoke('fs:icon', name),
+  fsOpenInExplorer: (targetPath: string) => ipcRenderer.invoke('fs:openInExplorer', targetPath),
+  fsWatch: (watchId: string, dirPath: string) => ipcRenderer.invoke('fs:watch', watchId, dirPath),
+  fsUnwatch: (watchId: string) => ipcRenderer.invoke('fs:unwatch', watchId),
+  fsCopy: (source: string, dest: string) => ipcRenderer.invoke('fs:copy', source, dest),
+
+  // Git
+  gitStatus: (dir: string) => ipcRenderer.invoke('git:status', dir),
+  gitLog: (dir: string) => ipcRenderer.invoke('git:log', dir),
+  gitDiff: (dir: string, file: string) => ipcRenderer.invoke('git:diff', dir, file),
+  gitDiffStaged: (dir: string) => ipcRenderer.invoke('git:diffStaged', dir),
+  gitAdd: (dir: string, files: string[]) => ipcRenderer.invoke('git:add', dir, files),
+  gitUnstage: (dir: string, files: string[]) => ipcRenderer.invoke('git:unstage', dir, files),
+  gitCommit: (dir: string, message: string) => ipcRenderer.invoke('git:commit', dir, message),
+  gitBranches: (dir: string) => ipcRenderer.invoke('git:branches', dir),
+  gitCheckout: (dir: string, branch: string) => ipcRenderer.invoke('git:checkout', dir, branch),
+  gitCreateBranch: (dir: string, name: string) => ipcRenderer.invoke('git:createBranch', dir, name),
+  gitPush: (dir: string) => ipcRenderer.invoke('git:push', dir),
+  gitPull: (dir: string) => ipcRenderer.invoke('git:pull', dir),
+
+  // Database
+  dbGetState: (key: string) => ipcRenderer.invoke('db:getState', key),
+  dbSetState: (key: string, value: string) => ipcRenderer.invoke('db:setState', key, value),
+  dbGetAllState: () => ipcRenderer.invoke('db:getAllState'),
+  dbDeleteState: (key: string) => ipcRenderer.invoke('db:deleteState', key),
+
+  // Watcher
+  watcherStart: (watchId: string, dirPath: string, patterns?: string[]) => ipcRenderer.invoke('watcher:start', watchId, dirPath, patterns),
+  watcherStop: (watchId: string) => ipcRenderer.invoke('watcher:stop', watchId),
+  watcherStopAll: () => ipcRenderer.invoke('watcher:stopAll'),
+  onWatcherChange: (callback: (watchId: string, type: string, path: string) => void) => {
+    const subscription = (_event: any, watchId: string, type: string, path: string) => callback(watchId, type, path)
+    ipcRenderer.on('watcher:change', subscription)
+    return () => { ipcRenderer.removeListener('watcher:change', subscription) }
   },
 
   // Updater

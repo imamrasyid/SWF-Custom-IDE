@@ -1,4 +1,4 @@
-import { Files, Search, Hammer, Settings, LogOut, Network, Play, Database, Layout, Info } from 'lucide-react'
+import { Files, Search, Hammer, Settings, LogOut, Network, Play, Database, Layout, Info, GitBranch } from 'lucide-react'
 import { useAppStore } from '../../stores/app-store'
 
 export default function ActivityBar() {
@@ -11,7 +11,7 @@ export default function ActivityBar() {
   const swfPath = useAppStore((s) => s.swfPath)
   const projectRoot = useAppStore((s) => s.projectRoot)
 
-  const handleTabClick = (tab: 'explorer' | 'search' | 'builder' | 'settings') => {
+  const handleTabClick = (tab: 'explorer' | 'search' | 'builder' | 'settings' | 'source-control') => {
     if (activityTab === tab && isSidebarOpen) {
       toggleSidebar(false)
     } else {
@@ -39,6 +39,17 @@ export default function ActivityBar() {
           <Search size={20} />
           <span className="activity-bar-tooltip">Search & Replace</span>
         </button>
+
+        {/* Source Control / Git */}
+        {projectRoot && (
+          <button
+            onClick={() => handleTabClick('source-control')}
+            className={`activity-bar-btn group ${activityTab === 'source-control' && isSidebarOpen ? 'active' : ''}`}
+          >
+            <GitBranch size={20} />
+            <span className="activity-bar-tooltip">Source Control</span>
+          </button>
+        )}
 
         {/* SWF Builder */}
         <button
