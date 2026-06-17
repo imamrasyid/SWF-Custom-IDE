@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAppStore } from '../../stores/app-store'
-import { Info, Monitor, Cpu, HardDrive, Terminal, RefreshCw, Github, ExternalLink, FileCode, Zap, Code2, Boxes, Globe, Shield } from 'lucide-react'
+import { Info, Monitor, Cpu, HardDrive, Terminal, RefreshCw, Github, ExternalLink, FileCode, Zap, Code2, Boxes, Globe, Shield, ShieldCheck } from 'lucide-react'
 
 type SystemInfo = {
   appVersion: string
@@ -42,6 +42,7 @@ export default function AboutModule() {
   const updateStatus = useAppStore((s) => s.updateStatus)
   const checkForUpdates = useAppStore((s) => s.checkForUpdates)
   const installUpdate = useAppStore((s) => s.installUpdate)
+  const licenseInfo = useAppStore((s) => s.licenseInfo)
   const [sysInfo, setSysInfo] = useState<SystemInfo | null>(null)
 
   useEffect(() => {
@@ -212,12 +213,30 @@ export default function AboutModule() {
             </div>
           </div>
           <div className="p-4">
-            <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
-              MIT License. Copyright © 2026
-            </p>
-            <p className="text-[10px] text-slate-600 mt-1.5 leading-relaxed">
-              Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files, to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software.
-            </p>
+            {licenseInfo.licenseId ? (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck size={13} className="text-emerald-400" />
+                  <span className="text-[11px] font-bold text-emerald-400">Activated</span>
+                </div>
+                <div className="space-y-1">
+                  <InfoRow label="License ID" value={licenseInfo.licenseId} icon={ShieldCheck} />
+                  <InfoRow label="Type" value={licenseInfo.type || 'lifetime'} icon={Shield} />
+                  <InfoRow label="Features" value={licenseInfo.features.join(', ') || 'all'} icon={Info} />
+                  <InfoRow label="Activated" value={licenseInfo.activatedAt ? new Date(licenseInfo.activatedAt).toLocaleDateString() : 'N/A'} icon={Info} />
+                  <InfoRow label="Device" value={licenseInfo.deviceBound ? 'Bound' : 'Unbound'} icon={Monitor} />
+                </div>
+              </div>
+            ) : (
+              <div>
+                <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
+                  No license activated
+                </p>
+                <p className="text-[10px] text-slate-600 mt-1.5 leading-relaxed">
+                  Enter a valid license key to unlock all features of NinjaSage Modding Toolkit.
+                </p>
+              </div>
+            )}
           </div>
         </div>
 

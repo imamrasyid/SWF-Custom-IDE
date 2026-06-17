@@ -19,6 +19,7 @@ import StatusBar from './components/layout/StatusBar'
 import CommandPalette from './components/layout/CommandPalette'
 import ErrorBoundary from './components/layout/ErrorBoundary'
 import UpdateBanner from './components/layout/UpdateBanner'
+import ActivationScreen from './components/layout/ActivationScreen'
 
 export default function App() {
   const swfPath = useAppStore((s) => s.swfPath)
@@ -27,7 +28,15 @@ export default function App() {
   const activityTab = useAppStore((s) => s.activityTab)
   const sidebarWidth = useAppStore((s) => s.sidebarWidth)
   const setSidebarWidth = useAppStore((s) => s.setSidebarWidth)
+  const showActivationScreen = useAppStore((s) => s.showActivationScreen)
+  const licenseLoading = useAppStore((s) => s.licenseLoading)
+  const refreshLicenseStatus = useAppStore((s) => s.refreshLicenseStatus)
   const { toasts, show, remove } = useToast()
+
+  // Check license status on mount
+  useEffect(() => {
+    refreshLicenseStatus()
+  }, [refreshLicenseStatus])
 
   useEffect(() => {
     const matchKeybinding = (e: KeyboardEvent, keybindingStr: string) => {
@@ -317,6 +326,23 @@ export default function App() {
   }
 
   const currentTheme = localStorage.getItem('setting:appearance.theme') || 'slate'
+
+  if (licenseLoading) {
+    return (
+      <div className="app-container flex flex-col h-screen w-screen overflow-hidden items-center justify-center bg-[#080c14]">
+        <div className="w-10 h-10 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
+      </div>
+    )
+  }
+
+  if (showActivationScreen) {
+    return (
+      <>
+        <ActivationScreen />
+        <ToastContainer toasts={toasts} onRemove={remove} />
+      </>
+    )
+  }
 
   return (
     <div className={`app-container theme-${currentTheme} flex flex-col h-screen w-screen overflow-hidden`}>

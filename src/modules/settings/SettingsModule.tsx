@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Settings, Search, Sliders, Monitor, Code, Cpu, Save, RotateCcw, FileCode, AlertCircle, AlertTriangle, Keyboard, Edit3, Download, Upload, Info, RefreshCw } from 'lucide-react'
+import { Settings, Search, Sliders, Monitor, Code, Cpu, Save, RotateCcw, FileCode, AlertCircle, AlertTriangle, Keyboard, Edit3, Download, Upload, Info, RefreshCw, ShieldCheck, ShieldOff, Loader2, Key } from 'lucide-react'
 import Editor from '@monaco-editor/react'
 import { useToast } from '../../hooks/useToast'
 import { useAppStore } from '../../stores/app-store'
@@ -48,7 +48,16 @@ export default function SettingsModule() {
   const projectRoot = useAppStore((s) => s.projectRoot)
   const [searchQuery, setSearchQuery] = useState('')
   const [activeCategory, setActiveCategory] = useState<'common' | 'editor' | 'compiler' | 'decompiler'>('common')
-  const [activeTab, setActiveTab] = useState<'user' | 'workspace' | 'keybindings'>('user')
+  const [activeTab, setActiveTab] = useState<'user' | 'workspace' | 'keybindings' | 'license'>('user')
+  const [licenseKey, setLicenseKey] = useState('')
+  const [licenseActivating, setLicenseActivating] = useState(false)
+  const [licenseError, setLicenseError] = useState<string | null>(null)
+
+  const licenseStatus = useAppStore((s) => s.licenseStatus)
+  const licenseInfo = useAppStore((s) => s.licenseInfo)
+  const activateLicenseKey = useAppStore((s) => s.activateLicenseKey)
+  const deactivateLicenseKey = useAppStore((s) => s.deactivateLicenseKey)
+  const refreshLicenseStatus = useAppStore((s) => s.refreshLicenseStatus)
   const [isJsonMode, setIsJsonMode] = useState(false)
   const [jsonContent, setJsonContent] = useState('')
   const [recordingActionId, setRecordingActionId] = useState<string | null>(null)
@@ -637,6 +646,19 @@ export default function SettingsModule() {
           >
             Keyboard Shortcuts
           </button>
+          <button
+            onClick={() => {
+              setActiveTab('license')
+              setIsJsonMode(false)
+            }}
+            className={`px-4 py-2.5 text-xs font-semibold border-b-2 tracking-wider transition-all uppercase cursor-pointer ${
+              activeTab === 'license' 
+                ? 'text-indigo-400 border-indigo-500 font-bold' 
+                : 'text-slate-500 border-transparent hover:text-slate-300'
+            }`}
+          >
+            License
+          </button>
         </div>
       )}
 
@@ -644,6 +666,142 @@ export default function SettingsModule() {
       <div className="flex-1 flex overflow-hidden min-h-0">
         {activeTab === 'keybindings' ? (
           renderKeybindingsEditor()
+        ) : activeTab === 'license' ? (
+          /* LICENSE MANAGEMENT TAB */
+          <div className="flex-1 flex flex-col p-6 overflow-y-auto select-none bg-[#080b13] animate-in fade-in duration-200">
+            <div className="flex items-center gap-2 mb-4 border-b border-slate-900 pb-3">
+              <ShieldCheck size={18} className="text-indigo-400" />
+              <h3 className="text-sm font-bold text-slate-200">License Management</h3>
+            </div>
+
+            {/* Current License Status */}
+            <div className="bg-slate-950/40 border border-slate-900/60 rounded-xl p-4 mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Current Status</span>
+                <button
+                  onClick={refreshLicenseStatus}
+                  className="flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-semibold bg-slate-900/80 hover:bg-slate-800 border border-slate-800 rounded-lg text-slate-300 hover:text-white transition-colors cursor-pointer"
+                >
+                  <RefreshCw size={10} />
+                  Refresh
+                </button>
+              </div>
+
+              {licenseStatus.isValid ? (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck size={14} className="text-emerald-400" />
+                    <span className="text-sm font-bold text-emerald-400">Licensed</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 text-[11px]">
+                    <div>
+                      <span className="text-slate-500">License ID:</span>
+                      <span className="ml-2 text-slate-300 font-mono">{licenseInfo.licenseId}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500">Type:</span>
+                      <span className="ml-2 text-slate-300 capitalize">{licenseInfo.type}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500">Features:</span>
+                      <span className="ml-2 text-slate-300">{licenseInfo.features.join(', ') || 'all'}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500">Activated:</span>
+                      <span className="ml-2 text-slate-300">
+                        {licenseInfo.activatedAt ? new Date(licenseInfo.activatedAt).toLocaleDateString() : 'N/A'}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={async () => {
+                      if (confirm('Are you sure you want to deactivate this license? The app will restart.')) {
+                        await deactivateLicenseKey()
+                        window.location.reload()
+                      }
+                    }}
+                    className="mt-2 px-3 py-1.5 text-[11px] font-semibold bg-rose-950/40 hover:bg-rose-950/60 border border-rose-900/30 text-rose-400 hover:text-rose-300 rounded-lg transition-colors cursor-pointer"
+                  >
+                    Deactivate License
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <ShieldOff size={14} className="text-amber-400" />
+                    <span className="text-sm font-bold text-amber-400">No License Activated</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400">
+                    Enter your license key below to activate NinjaSage Modding Toolkit.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Activate License */}
+            {!licenseStatus.isValid && (
+              <div className="bg-slate-950/40 border border-slate-900/60 rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Key size={14} className="text-indigo-400" />
+                  <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Activate License</span>
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={licenseKey}
+                    onChange={(e) => {
+                      setLicenseKey(e.target.value.replace(/[^A-Za-z0-9._-]/g, ''))
+                      setLicenseError(null)
+                    }}
+                    placeholder="XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
+                    disabled={licenseActivating}
+                    className="flex-1 px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-xs text-slate-200 placeholder-slate-600 font-mono focus:outline-none focus:border-indigo-500/60 transition-all"
+                  />
+                  <button
+                    onClick={async () => {
+                      if (!licenseKey.trim()) {
+                        setLicenseError('Please enter a license key')
+                        return
+                      }
+                      setLicenseActivating(true)
+                      setLicenseError(null)
+                      try {
+                        const result = await activateLicenseKey(licenseKey.trim())
+                        if (result.success) {
+                          setLicenseKey('')
+                          show('License activated successfully!', 'success')
+                          refreshLicenseStatus()
+                        } else {
+                          setLicenseError(result.error || 'Activation failed')
+                        }
+                      } catch {
+                        setLicenseError('An unexpected error occurred')
+                      } finally {
+                        setLicenseActivating(false)
+                      }
+                    }}
+                    disabled={licenseActivating || !licenseKey.trim()}
+                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-800 disabled:text-slate-600 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed flex items-center gap-1.5"
+                  >
+                    {licenseActivating ? (
+                      <>
+                        <Loader2 size={12} className="animate-spin" />
+                        Activating...
+                      </>
+                    ) : (
+                      'Activate'
+                    )}
+                  </button>
+                </div>
+                {licenseError && (
+                  <div className="flex items-center gap-2 mt-2 p-2 bg-rose-950/30 border border-rose-900/30 rounded-lg">
+                    <AlertCircle size={12} className="text-rose-400 shrink-0" />
+                    <span className="text-[10px] text-rose-300">{licenseError}</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         ) : activeTab === 'workspace' && !projectRoot ? (
           /* NO WORKSPACE FOLDER WARNING */
           <div className="flex-1 flex flex-col items-center justify-center p-8 text-center select-none max-w-lg mx-auto gap-3">

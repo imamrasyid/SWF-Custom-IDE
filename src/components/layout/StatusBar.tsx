@@ -1,4 +1,4 @@
-import { Terminal, HardDrive, Files, ShieldCheck, Bell, Trash2, X, CheckCircle2, AlertCircle, Info, AlertTriangle, FileCode, List } from 'lucide-react'
+import { Terminal, HardDrive, Files, ShieldCheck, ShieldOff, Bell, Trash2, X, CheckCircle2, AlertCircle, Info, AlertTriangle, FileCode, List } from 'lucide-react'
 import { useAppStore } from '../../stores/app-store'
 import { useState, useEffect } from 'react'
 
@@ -15,6 +15,7 @@ export default function StatusBar() {
   const editingFileRight = useAppStore((s) => s.editingFileRight)
   const openTabs = useAppStore((s) => s.openTabs)
   const rightOpenTabs = useAppStore((s) => s.rightOpenTabs)
+  const licenseStatus = useAppStore((s) => s.licenseStatus)
 
   const hasErrors = Object.values(diagnostics).some(fileErrors => fileErrors.some(e => e.severity === 'error'))
   const hasWarnings = Object.values(diagnostics).some(fileErrors => fileErrors.some(e => e.severity === 'warning'))
@@ -141,6 +142,20 @@ export default function StatusBar() {
 
       {/* Right section: SWF stats and bottom panel toggle */}
       <div className="flex items-center gap-4">
+        {/* License Status */}
+        {licenseStatus.isValid && (
+          <div className="flex items-center gap-1 text-emerald-500">
+            <ShieldCheck size={11} />
+            <span className="text-[10px] font-semibold">Licensed</span>
+          </div>
+        )}
+        {!licenseStatus.isValid && (
+          <div className="flex items-center gap-1 text-amber-500">
+            <ShieldOff size={11} />
+            <span className="text-[10px] font-semibold">Unlicensed</span>
+          </div>
+        )}
+
         {hasErrors && (
           <span className="text-[9px] bg-rose-950/40 text-rose-500 border border-rose-900/30 px-1 rounded flex items-center gap-0.5 font-bold animate-pulse">
             <AlertCircle size={9} />

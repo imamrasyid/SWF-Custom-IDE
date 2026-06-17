@@ -28,3 +28,9 @@ Desktop.ini
 *.swp
 *.swo
 *~
+# License secrets (NEVER commit!)
+*.key
+*.pem
+license_secret*
+# Encrypted license data (user-specific, not for repo)
+*.enc

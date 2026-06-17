@@ -196,6 +196,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on('update:error', subscription)
     return () => { ipcRenderer.removeListener('update:error', subscription) }
   },
-  getSystemInfo: () => ipcRenderer.invoke('system:info')
+  getSystemInfo: () => ipcRenderer.invoke('system:info'),
+
+  // License
+  getLicenseStatus: () => ipcRenderer.invoke('license:status'),
+  activateLicense: (licenseKey: string) => ipcRenderer.invoke('license:activate', licenseKey),
+  deactivateLicense: () => ipcRenderer.invoke('license:deactivate'),
+  getLicenseInfo: () => ipcRenderer.invoke('license:info'),
+  isLicenseActivated: () => ipcRenderer.invoke('license:isActivated'),
+  getDeviceFingerprint: () => ipcRenderer.invoke('license:deviceFingerprint'),
+  getDeviceId: () => ipcRenderer.invoke('license:deviceId'),
 })
 

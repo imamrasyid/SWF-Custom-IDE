@@ -14,6 +14,7 @@ import { registerFilesystemIpc } from './ipc/filesystem'
 import { registerGitIpc } from './ipc/git'
 import { initDatabase, registerDatabaseIpc } from './ipc/database'
 import { registerWatcherIpc } from './ipc/watcher'
+import { registerLicenseIpc } from './ipc/license'
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
 
@@ -79,6 +80,7 @@ app.whenReady().then(() => {
   registerFfdecIpc()
   registerDatabaseIpc()
   registerWatcherIpc()
+  registerLicenseIpc()
 
   ipcMain.handle('updater:check', checkForUpdates)
   ipcMain.handle('updater:download', downloadUpdate)

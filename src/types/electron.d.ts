@@ -133,6 +133,29 @@ interface ElectronAPI {
   gitCreateBranch: (dir: string, name: string) => Promise<boolean>
   gitPush: (dir: string) => Promise<{ success: boolean; message: string }>
   gitPull: (dir: string) => Promise<{ success: boolean; message: string }>
+
+  // License
+  getLicenseStatus: () => Promise<{
+    isValid: boolean
+    isActivated: boolean
+    licenseId: string | null
+    licenseType: string | null
+    features: string[]
+    activatedAt: number | null
+    error: string | null
+  }>
+  activateLicense: (licenseKey: string) => Promise<{ success: boolean; error: string | null; licenseId?: string }>
+  deactivateLicense: () => Promise<boolean>
+  getLicenseInfo: () => Promise<{
+    licenseId: string | null
+    type: string | null
+    features: string[]
+    activatedAt: number | null
+    deviceBound: boolean
+  }>
+  isLicenseActivated: () => Promise<boolean>
+  getDeviceFingerprint: () => Promise<string>
+  getDeviceId: () => Promise<string>
 }
 
 interface Window {
