@@ -36,8 +36,3 @@ secret_key.txt
 generate_key_command.txt
 *.enc
 *.node
-
-# Server data
-server/dashboard/node_modules/
-server/dashboard/.next/
-server/dashboard/.env.local
