@@ -1,0 +1,43 @@
+appId: com.ninjasage.modding-toolkit
+productName: NinjaSage Modding Toolkit
+copyright: Copyright © 2026
+directories:
+  output: release
+  buildResources: resources
+files:
+  - dist-electron
+  - dist
+  - native/prebuilt
+asar: true
+asarUnpack:
+  - "**/*.node"
+  - ".integrity"
+extraResources:
+  - from: bin
+    to: bin
+publish:
+  provider: github
+  owner: imamrasyid
+  repo: SWF-Custom-IDE
+  releaseType: release
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: resources/icon.ico
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  artifactName: ${productName}-${version}-Setup.${ext}
+mac:
+  target:
+    - dmg
+    - zip
+  icon: resources/icon.icns
+linux:
+  target:
+    - AppImage
+    - deb
+  icon: resources/icon.png

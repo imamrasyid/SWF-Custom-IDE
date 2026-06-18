@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+# Build output
+dist/
+dist-electron/
+release/
+# Binaries & SDKs (large files)
+bin/
+ffdec/
+resources/
+# Electron builder
+*.tgz
+# Logs
+*.log
+npm-debug.log*
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+# IDE
+.vscode/
+.idea/
+# Environment
+.env
+.env.local
+.env.*.local
+# Editor temp files
+*.swp
+*.swo
+*~
+# License secrets (NEVER commit!)
+*.key
+*.pem
+license_secret*
+secret_key.txt
+generate_key_command.txt
+*.enc
+*.node
+
+# Server data
+server/dashboard/node_modules/
+server/dashboard/.next/
+server/dashboard/.env.local

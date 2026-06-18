@@ -1,0 +1,14 @@
+{
+  "name": "license-key-native",
+  "version": "1.0.0",
+  "description": "Native addon for license key storage and verification",
+  "main": "build/Release/license_key.node",
+  "scripts": {
+    "build": "node-gyp rebuild",
+    "build:release": "node-gyp rebuild --release"
+  },
+  "gypfile": true,
+  "dependencies": {
+    "node-addon-api": "^7.0.0"
+  }
+}
