@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAppStore } from '../../stores/app-store'
 import { Info, Monitor, Cpu, HardDrive, Terminal, RefreshCw, Github, ExternalLink, FileCode, Zap, Code2, Boxes, Globe, Shield, ShieldCheck } from 'lucide-react'
+import logoUrl from '../../../resources/images/logo.png'
 
 type SystemInfo = {
   appVersion: string
@@ -64,11 +65,9 @@ export default function AboutModule() {
     <div className="flex-1 flex flex-col h-full min-h-0 overflow-hidden p-6 animate-slide-in-right select-none">
       {/* Header */}
       <div className="flex items-center gap-4 pb-4 border-b border-slate-900/60 shrink-0">
-        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center shadow-lg shadow-indigo-900/30 shrink-0">
-          <span className="text-xl font-black text-white tracking-tighter">NS</span>
-        </div>
+        <img src={logoUrl} alt="WayangIDE Logo" className="w-14 h-14 rounded-xl object-cover shadow-lg shadow-indigo-900/30 shrink-0" />
         <div className="flex-1 min-w-0">
-          <h2 className="text-lg font-extrabold tracking-tight text-white">NinjaSage Modding Toolkit</h2>
+          <h2 className="text-lg font-extrabold tracking-tight text-white">WayangIDE</h2>
           <p className="text-[11px] text-slate-500 mt-0.5">SWF Modding & ActionScript IDE</p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
@@ -233,7 +232,7 @@ export default function AboutModule() {
                   No license activated
                 </p>
                 <p className="text-[10px] text-slate-600 mt-1.5 leading-relaxed">
-                  Enter a valid license key to unlock all features of NinjaSage Modding Toolkit.
+                  Enter a valid license key to unlock all features of WayangIDE.
                 </p>
               </div>
             )}

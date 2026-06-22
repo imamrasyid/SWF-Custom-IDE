@@ -25,7 +25,7 @@ async function migrate(db: ReturnType<typeof createClient>) {
     CREATE TABLE IF NOT EXISTS licenses (
       id TEXT PRIMARY KEY,
       license_key_hash TEXT UNIQUE NOT NULL,
-      product TEXT NOT NULL DEFAULT 'ninjasage-modding-toolkit',
+      product TEXT NOT NULL DEFAULT 'wayangide',
       type TEXT NOT NULL DEFAULT 'lifetime',
       max_activations INTEGER NOT NULL DEFAULT 3,
       features TEXT NOT NULL DEFAULT '[]',
@@ -50,6 +50,45 @@ async function migrate(db: ReturnType<typeof createClient>) {
       ip_address TEXT,
       app_version TEXT,
       FOREIGN KEY (license_id) REFERENCES licenses(id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS devices (
+      id TEXT PRIMARY KEY,
+      license_id TEXT,
+      first_seen INTEGER NOT NULL,
+      last_seen INTEGER NOT NULL,
+      activation_count INTEGER DEFAULT 1,
+      ip_addresses TEXT DEFAULT '[]',
+      is_banned INTEGER DEFAULT 0,
+      ban_reason TEXT,
+      ban_expires_at INTEGER,
+      created_at INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS rate_limits (
+      id TEXT PRIMARY KEY,
+      count INTEGER DEFAULT 1,
+      window_start INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS activity_log (
+      id TEXT PRIMARY KEY,
+      device_id TEXT,
+      license_id TEXT,
+      event_type TEXT NOT NULL,
+      ip_address TEXT,
+      details TEXT,
+      created_at INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS remote_commands (
+      id TEXT PRIMARY KEY,
+      command_type TEXT NOT NULL,
+      target_license_id TEXT,
+      target_device_id TEXT,
+      payload TEXT,
+      executed INTEGER DEFAULT 0,
+      created_at INTEGER NOT NULL
     );
 
     CREATE TABLE IF NOT EXISTS telemetry_events (
@@ -78,6 +117,11 @@ async function migrate(db: ReturnType<typeof createClient>) {
     CREATE INDEX IF NOT EXISTS idx_activations_license ON activations(license_id);
     CREATE INDEX IF NOT EXISTS idx_activations_device ON activations(device_id);
     CREATE INDEX IF NOT EXISTS idx_activations_active ON activations(is_active);
+    CREATE INDEX IF NOT EXISTS idx_devices_license ON devices(license_id);
+    CREATE INDEX IF NOT EXISTS idx_devices_banned ON devices(is_banned);
+    CREATE INDEX IF NOT EXISTS idx_activity_log_device ON activity_log(device_id);
+    CREATE INDEX IF NOT EXISTS idx_activity_log_created ON activity_log(created_at);
+    CREATE INDEX IF NOT EXISTS idx_remote_commands_executed ON remote_commands(executed);
     CREATE INDEX IF NOT EXISTS idx_telemetry_events_type ON telemetry_events(event_type);
     CREATE INDEX IF NOT EXISTS idx_telemetry_events_created ON telemetry_events(created_at);
     CREATE INDEX IF NOT EXISTS idx_telemetry_sessions_device ON telemetry_sessions(device_id);

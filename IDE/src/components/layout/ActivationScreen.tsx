@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAppStore } from '../../stores/app-store'
 import { ShieldCheck, Key, Loader2, CheckCircle2, AlertCircle, X } from 'lucide-react'
+import logoUrl from '../../../resources/images/logo.png'
 
 export default function ActivationScreen() {
   const [licenseKey, setLicenseKey] = useState('')
@@ -59,7 +60,7 @@ export default function ActivationScreen() {
             </div>
             <h1 className="text-xl font-extrabold text-white mb-2">License Activated</h1>
             <p className="text-sm text-slate-400 mb-6">
-              NinjaSage Modding Toolkit is now fully licensed. Enjoy all features!
+              WayangIDE is now fully licensed. Enjoy all features!
             </p>
             <button
               onClick={() => window.location.reload()}
@@ -78,10 +79,8 @@ export default function ActivationScreen() {
       <div className="w-full max-w-lg p-8">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center shadow-lg shadow-indigo-900/30 mb-4">
-            <span className="text-xl font-black text-white tracking-tighter">NS</span>
-          </div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-white">NinjaSage Modding Toolkit</h1>
+          <img src={logoUrl} alt="WayangIDE Logo" className="w-14 h-14 rounded-xl object-cover shadow-lg shadow-indigo-900/30 mb-4" />
+          <h1 className="text-2xl font-extrabold tracking-tight text-white">WayangIDE</h1>
           <p className="text-sm text-slate-500 mt-1">SWF Modding & ActionScript IDE</p>
         </div>
 

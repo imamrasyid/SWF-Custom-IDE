@@ -42,9 +42,9 @@ export function registerSimulatorIpc() {
         const tempDescPath = path.join(os.tmpdir(), 'ns-app-descriptor.xml')
         const xmlContent = `<?xml version="1.0" encoding="utf-8" ?>
 <application xmlns="http://ns.adobe.com/air/application/51.3">
-  <id>com.ninjasage.simulator</id>
+  <id>com.wayangide.simulator</id>
   <versionNumber>1.0.0</versionNumber>
-  <filename>NinjaSageSimulator</filename>
+  <filename>WayangIDESimulator</filename>
   <initialWindow>
     <content>${swfName}</content>
     <visible>true</visible>

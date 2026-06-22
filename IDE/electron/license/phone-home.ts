@@ -1,12 +1,16 @@
 import { getShortDeviceId } from './device-fingerprint'
 
-const SERVER_URL = process.env.LICENSE_SERVER_URL || 'https://ninjasage-license.vercel.app'
+const isDev = !require('electron').app?.isPackaged
+const SERVER_URL = process.env.LICENSE_SERVER_URL || (isDev ? 'http://localhost:3000' : 'https://wayangide-license.vercel.app')
 const API_KEY = process.env.LICENSE_SERVER_API_KEY || ''
 const PHONE_HOME_INTERVAL = 24 * 60 * 60 * 1000
+const COMMAND_POLL_INTERVAL = 60 * 60 * 1000
 const REQUEST_TIMEOUT = 15000
 
 let phoneHomeTimer: ReturnType<typeof setInterval> | null = null
+let commandTimer: ReturnType<typeof setInterval> | null = null
 let lastPhoneHome = 0
+let lastCommandCheck = 0
 
 interface ServerVerifyResponse {
   valid: boolean
@@ -17,6 +21,17 @@ interface ServerVerifyResponse {
   revokedAt?: number
   activations?: number
   maxActivations?: number
+}
+
+interface CommandResponse {
+  banned: boolean
+  reason?: string
+  expiresAt?: number
+  commands: Array<{
+    id: string
+    type: string
+    payload?: Record<string, any>
+  }>
 }
 
 async function apiRequest<T>(
@@ -62,11 +77,22 @@ async function apiRequest<T>(
   }
 }
 
+export async function checkBan(): Promise<{ banned: boolean; reason?: string }> {
+  const deviceId = getShortDeviceId()
+  const result = await apiRequest<{ banned: boolean; reason?: string }>('POST', '/api/license/check-ban', { deviceId })
+  return result || { banned: false }
+}
+
 export async function phoneHomeActivate(
   licenseKey: string,
   appVersion?: string
 ): Promise<{ success: boolean; error?: string; licenseId?: string }> {
   const deviceId = getShortDeviceId()
+
+  const banResult = await checkBan()
+  if (banResult.banned) {
+    return { success: false, error: `Device banned: ${banResult.reason}` }
+  }
 
   const result = await apiRequest<any>('POST', '/api/license/activate', {
     licenseKey,
@@ -110,6 +136,18 @@ export async function phoneHomeVerify(licenseId: string): Promise<ServerVerifyRe
   return result
 }
 
+export async function pollCommands(licenseId: string): Promise<CommandResponse | null> {
+  const deviceId = getShortDeviceId()
+
+  const result = await apiRequest<CommandResponse>('GET', `/api/license/command?deviceId=${deviceId}&licenseId=${licenseId}&lastCheck=${lastCommandCheck}`)
+
+  if (result) {
+    lastCommandCheck = Date.now()
+  }
+
+  return result
+}
+
 export async function phoneHomeStatus(): Promise<{
   online: boolean
   lastCheck: number
@@ -128,6 +166,42 @@ export async function phoneHomeStatus(): Promise<{
   return { online: false, lastCheck: lastPhoneHome }
 }
 
+function executeCommand(command: { type: string; payload?: Record<string, any> }, licenseId: string): void {
+  console.log(`[PhoneHome] Executing command: ${command.type}`)
+
+  switch (command.type) {
+    case 'force_revoke':
+      console.warn('[PhoneHome] Force revoke received, deactivating license')
+      const { deleteLicense } = require('./license-store')
+      deleteLicense()
+      break
+
+    case 'force_update':
+      const minVersion = command.payload?.minVersion
+      if (minVersion) {
+        const appVersion = require('electron').app.getVersion()
+        if (appVersion < minVersion) {
+          console.warn(`[PhoneHome] Force update required: ${minVersion}`)
+        }
+      }
+      break
+
+    case 'kill_switch':
+      console.error('[PhoneHome] Kill switch activated, shutting down')
+      require('electron').app.quit()
+      break
+
+    case 'force_deactivate':
+      console.warn('[PhoneHome] Force deactivate received')
+      const store = require('./license-store')
+      store.deleteLicense()
+      break
+
+    default:
+      console.warn(`[PhoneHome] Unknown command: ${command.type}`)
+  }
+}
+
 export function startPeriodicPhoneHome(licenseId: string, callback?: (valid: boolean) => void): void {
   stopPeriodicPhoneHome()
 
@@ -138,12 +212,31 @@ export function startPeriodicPhoneHome(licenseId: string, callback?: (valid: boo
       callback?.(false)
     }
   }, PHONE_HOME_INTERVAL)
+
+  commandTimer = setInterval(async () => {
+    const result = await pollCommands(licenseId)
+    if (result) {
+      if (result.banned) {
+        console.warn('[PhoneHome] Device banned:', result.reason)
+        callback?.(false)
+        return
+      }
+
+      for (const command of result.commands) {
+        executeCommand(command, licenseId)
+      }
+    }
+  }, COMMAND_POLL_INTERVAL)
 }
 
 export function stopPeriodicPhoneHome(): void {
   if (phoneHomeTimer) {
     clearInterval(phoneHomeTimer)
     phoneHomeTimer = null
+  }
+  if (commandTimer) {
+    clearInterval(commandTimer)
+    commandTimer = null
   }
 }
 

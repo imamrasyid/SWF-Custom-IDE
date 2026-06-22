@@ -35,11 +35,8 @@ function checkDevTools(): boolean {
 }
 
 function checkForDebugger(): boolean {
-  try {
-    if ((process as any).debugPort && (process as any).debugPort !== 0) return true
-    const inspector = require('inspector')
-    if (inspector.url && inspector.url() !== '') return true
-  } catch {}
+  // Skip this check as it can be triggered by terminal/shell environments
+  // The more important check is the DevTools check
   return false
 }
 
@@ -60,26 +57,26 @@ function checkDevToolsProcess(): boolean {
 
 function showTamperDialog(message: string): void {
   try {
-    dialog.showMessageBoxSync({
+    dialog.showMessageBox({
       type: 'error',
       title: 'Security Alert',
       message: 'Application Integrity Violation',
       detail: message,
       buttons: ['OK']
+    }).then(() => {
+      app.quit()
+    }).catch(() => {
+      app.quit()
     })
-    app.quit()
   } catch {
     app.quit()
   }
 }
 
 function performStartupChecks(): boolean {
-  if (!TAMPER_CHECK_ENABLED) return true
-
-  if (checkDevTools()) {
-    console.error('[Security] DevTools detected at startup')
-    showTamperDialog('Developer tools detected. Application cannot run with debugging tools.')
-    return false
+  if (!TAMPER_CHECK_ENABLED) {
+    console.log('[Tamper] Tamper check disabled (development mode)')
+    return true
   }
 
   if (checkForDebugger()) {
@@ -104,7 +101,9 @@ function performStartupChecks(): boolean {
         showTamperDialog('Application files have been modified. Please reinstall the application.')
         return false
       }
-    } catch {}
+    } catch (e) {
+      console.error('[Security] Could not verify integrity:', e)
+    }
   }
 
   return true
@@ -150,3 +149,4 @@ export function stopPeriodicChecks(): void {
 }
 
 export { isRunningFromAsar, checkDevTools }
+

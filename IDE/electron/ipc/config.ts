@@ -26,7 +26,7 @@ export function registerConfigIpc() {
 
   ipcMain.handle('config:getToolbarActions', async (_event, projectRoot?: string) => {
     const configPath = projectRoot
-      ? path.join(projectRoot, '.ninjasage', 'toolbar.json')
+      ? path.join(projectRoot, '.wayangide', 'toolbar.json')
       : path.join(app.getPath('userData'), 'toolbar.json')
     
     try {
@@ -39,7 +39,7 @@ export function registerConfigIpc() {
 
   ipcMain.handle('config:saveToolbarActions', async (_event, actions: any[], projectRoot?: string) => {
     const configDir = projectRoot
-      ? path.join(projectRoot, '.ninjasage')
+      ? path.join(projectRoot, '.wayangide')
       : app.getPath('userData')
     const configPath = path.join(configDir, 'toolbar.json')
     
@@ -54,7 +54,7 @@ export function registerConfigIpc() {
   })
 
   ipcMain.handle('config:getBuildHooks', async (_event, projectRoot: string) => {
-    const hooksPath = path.join(projectRoot, '.ninjasage', 'hooks.json')
+    const hooksPath = path.join(projectRoot, '.wayangide', 'hooks.json')
     try {
       if (fs.existsSync(hooksPath)) {
         return JSON.parse(fs.readFileSync(hooksPath, 'utf8'))
@@ -64,7 +64,7 @@ export function registerConfigIpc() {
   })
 
   ipcMain.handle('config:saveBuildHooks', async (_event, projectRoot: string, hooks: any) => {
-    const hooksDir = path.join(projectRoot, '.ninjasage')
+    const hooksDir = path.join(projectRoot, '.wayangide')
     const hooksPath = path.join(hooksDir, 'hooks.json')
     
     try {
@@ -98,7 +98,7 @@ export function registerConfigIpc() {
   ipcMain.handle('config:export', async (_event, projectRoot?: string) => {
     const result = await dialog.showSaveDialog(getMainWindow()!, {
       title: 'Export Configuration',
-      defaultPath: `ninjasage-config-${Date.now()}.json`,
+      defaultPath: `wayangide-config-${Date.now()}.json`,
       filters: [{ name: 'JSON', extensions: ['json'] }]
     })
     
@@ -120,11 +120,11 @@ export function registerConfigIpc() {
       }
       
       if (projectRoot) {
-        const settings = safeReadJson(path.join(projectRoot, '.ninjasage', 'settings.json'))
+        const settings = safeReadJson(path.join(projectRoot, '.wayangide', 'settings.json'))
         if (settings) config.settings = settings
-        const toolbar = safeReadJson(path.join(projectRoot, '.ninjasage', 'toolbar.json'))
+        const toolbar = safeReadJson(path.join(projectRoot, '.wayangide', 'toolbar.json'))
         if (toolbar) config.toolbar = toolbar
-        const hooks = safeReadJson(path.join(projectRoot, '.ninjasage', 'hooks.json'))
+        const hooks = safeReadJson(path.join(projectRoot, '.wayangide', 'hooks.json'))
         if (hooks) config.hooks = hooks
       } else {
         const userDataPath = app.getPath('userData')
@@ -159,7 +159,7 @@ export function registerConfigIpc() {
       const config = JSON.parse(fs.readFileSync(result.filePaths[0], 'utf8'))
       
       if (projectRoot) {
-        const settingsDir = path.join(projectRoot, '.ninjasage')
+        const settingsDir = path.join(projectRoot, '.wayangide')
         fs.mkdirSync(settingsDir, { recursive: true })
         if (config.settings) fs.writeFileSync(path.join(settingsDir, 'settings.json'), JSON.stringify(config.settings, null, 2), 'utf8')
         if (config.toolbar) fs.writeFileSync(path.join(settingsDir, 'toolbar.json'), JSON.stringify(config.toolbar, null, 2), 'utf8')
@@ -227,7 +227,7 @@ export function registerConfigIpc() {
   })
 
   ipcMain.handle('settings:readWorkspace', async (_event, projectRoot: string) => {
-    const filePath = path.join(projectRoot, '.ninjasage', 'settings.json')
+    const filePath = path.join(projectRoot, '.wayangide', 'settings.json')
     if (fs.existsSync(filePath)) {
       try {
         return JSON.parse(fs.readFileSync(filePath, 'utf8'))
@@ -240,7 +240,7 @@ export function registerConfigIpc() {
   })
 
   ipcMain.handle('settings:writeWorkspace', async (_event, projectRoot: string, settingsData: any) => {
-    const filePath = path.join(projectRoot, '.ninjasage', 'settings.json')
+    const filePath = path.join(projectRoot, '.wayangide', 'settings.json')
     try {
       fs.mkdirSync(path.dirname(filePath), { recursive: true })
       fs.writeFileSync(filePath, JSON.stringify(settingsData, null, 2), 'utf8')

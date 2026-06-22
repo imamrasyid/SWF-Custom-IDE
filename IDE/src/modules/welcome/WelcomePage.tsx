@@ -5,6 +5,7 @@ import { FolderOpen, History, Terminal, Sparkles, PlusCircle, BookOpen, Github, 
 import Button from '../../components/ui/Button'
 import Badge from '../../components/ui/Badge'
 import Input from '../../components/ui/Input'
+import logoUrl from '../../../resources/images/logo.png'
 
 type Template = {
   id: string
@@ -18,7 +19,7 @@ export default function WelcomePage() {
   
   const [searchQuery, setSearchQuery] = useState('')
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false)
-  const [projectName, setProjectName] = useState('MyNinjaSageMod')
+  const [projectName, setProjectName] = useState('MyWayangIDEMod')
   const [projectPath, setProjectPath] = useState('')
   const [templates, setTemplates] = useState<Template[]>([])
   const [selectedTemplate, setSelectedTemplate] = useState('basic')
@@ -108,13 +109,9 @@ export default function WelcomePage() {
           {/* Logo & Title */}
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
-              <div className="relative flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-600/10 border border-indigo-500/20 shadow-[0_0_20px_rgba(99,102,241,0.1)]">
-                <Terminal size={24} className="text-indigo-400" />
-                <Sparkles size={12} className="absolute -top-0.5 -right-0.5 text-pink-500" />
-              </div>
+              <img src={logoUrl} alt="WayangIDE Logo" className="w-12 h-12 rounded-xl object-cover shadow-[0_0_20px_rgba(99,102,241,0.1)]" />
               <div>
-                <h1 className="text-lg font-black tracking-tight text-white uppercase">NinjaSage</h1>
-                <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Modding Toolkit</p>
+                <h1 className="text-lg font-black tracking-tight text-white uppercase">WayangIDE</h1>
               </div>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed mt-2">
@@ -263,7 +260,7 @@ export default function WelcomePage() {
                   >
                     <div className="flex items-center gap-2 mb-1">
                       {tmpl.id === 'basic' && <FileCode size={14} />}
-                      {tmpl.id === 'ninjasage' && <Package size={14} />}
+                      {tmpl.id === 'wayangide' && <Package size={14} />}
                       {tmpl.id === 'empty' && <Terminal size={14} />}
                       <span className="text-xs font-bold">{tmpl.name}</span>
                     </div>
@@ -278,7 +275,7 @@ export default function WelcomePage() {
               type="text"
               value={projectName}
               onChange={(e) => setProjectName(e.target.value.replace(/[^a-zA-Z0-9_-]/g, ''))}
-              placeholder="MyNinjaSageMod"
+                  placeholder="MyWayangIDEMod"
               required
             />
 

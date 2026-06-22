@@ -98,7 +98,7 @@ const DEFAULT_SNIPPETS: CodeSnippet[] = [
 ]
 
 export const createSnippetsSlice: StateCreator<AppState, [], [], SnippetsSlice> = (set, get) => ({
-  snippets: safeJsonParse('ninjasage:snippets', DEFAULT_SNIPPETS),
+  snippets: safeJsonParse('wayangide:snippets', DEFAULT_SNIPPETS),
 
   addSnippet: (snippet) => set((state) => {
     const newSnippet: CodeSnippet = {
@@ -106,13 +106,13 @@ export const createSnippetsSlice: StateCreator<AppState, [], [], SnippetsSlice> 
       id: `sn-${Date.now()}`
     }
     const snippets = [...state.snippets, newSnippet]
-    localStorage.setItem('ninjasage:snippets', JSON.stringify(snippets))
+    localStorage.setItem('wayangide:snippets', JSON.stringify(snippets))
     return { snippets }
   }),
 
   removeSnippet: (id) => set((state) => {
     const snippets = state.snippets.filter(s => s.id !== id)
-    localStorage.setItem('ninjasage:snippets', JSON.stringify(snippets))
+    localStorage.setItem('wayangide:snippets', JSON.stringify(snippets))
     return { snippets }
   }),
 
@@ -120,7 +120,7 @@ export const createSnippetsSlice: StateCreator<AppState, [], [], SnippetsSlice> 
     const snippets = state.snippets.map(s => 
       s.id === id ? { ...s, ...updates } : s
     )
-    localStorage.setItem('ninjasage:snippets', JSON.stringify(snippets))
+    localStorage.setItem('wayangide:snippets', JSON.stringify(snippets))
     return { snippets }
   }),
 
@@ -132,7 +132,7 @@ export const createSnippetsSlice: StateCreator<AppState, [], [], SnippetsSlice> 
     const existing = state.snippets.filter(s => s.isBuiltIn)
     const imported = snippets.filter(s => !existing.some(e => e.id === s.id))
     const allSnippets = [...existing, ...imported]
-    localStorage.setItem('ninjasage:snippets', JSON.stringify(allSnippets))
+    localStorage.setItem('wayangide:snippets', JSON.stringify(allSnippets))
     return { snippets: allSnippets }
   }),
 

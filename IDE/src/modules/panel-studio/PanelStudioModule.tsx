@@ -33,7 +33,7 @@ export default function PanelStudioModule() {
 
   // Creation State
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false)
-  const [newPanelClass, setNewPanelClass] = useState<string>('id.ninjasage.features.MyCustomPanel')
+  const [newPanelClass, setNewPanelClass] = useState<string>('id.wayangide.features.MyCustomPanel')
 
   // ── Core: Decompile a single panel SWF and extract classes ──
   const decompilePanel = useCallback(async (panelPath: string): Promise<string[]> => {
@@ -608,7 +608,7 @@ export default function PanelStudioModule() {
               type="text"
               value={newPanelClass}
               onChange={(e) => setNewPanelClass(e.target.value.replace(/[^a-zA-Z0-9_.]/g, ''))}
-              placeholder="id.ninjasage.features.MyCustomPanel"
+              placeholder="id.wayangide.features.MyCustomPanel"
               required
             />
 

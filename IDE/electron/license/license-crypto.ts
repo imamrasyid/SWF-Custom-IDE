@@ -1,12 +1,12 @@
 import nacl from 'tweetnacl'
 
-const PRODUCT_ID = 'ninjasage-modding-toolkit'
-const SALT = 'ninja-sage-lifetime-license-v1'
+const PRODUCT_ID = 'wayangide'
+const SALT = 'wayangide-lifetime-license-v1'
 
 // Encoded public key - XOR obfuscated then base64url encoded
 // Decode at runtime to prevent trivial extraction from source
-const _ENC_PK = 'hZmRpZK1z5Sdye0VJQWuFhSf3i6jNt7cOa1bBkMr4dY='
-const _XOR_KEY = [0x4e, 0x53, 0x41, 0x47, 0x45] // "NSAGE"
+const _ENC_PK = 'QBgXIGPa444nqrQc0S3v3L_oimi5X_Bxr3wWSIRXxAM'
+const _XOR_KEY = [0x4e,0x53,0x41,0x47,0x45,0x4e,0x69,0x6e,0x6a,0x61,0x53,0x61,0x67,0x65,0x2d,0x76,0x31,0x2d,0x32,0x30,0x32,0x36,0x2d,0x50,0x75,0x62,0x6c,0x69,0x63,0x4b,0x65,0x79]
 
 export interface LicensePayload {
   id: string

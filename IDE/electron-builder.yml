@@ -1,6 +1,6 @@
-appId: com.ninjasage.modding-toolkit
-productName: NinjaSage Modding Toolkit
-copyright: Copyright © 2026
+appId: com.wayangide
+productName: WayangIDE
+copyright: Copyright DarkblowStudio© 2026
 directories:
   output: release
   buildResources: resources
@@ -8,36 +8,35 @@ files:
   - dist-electron
   - dist
   - native/prebuilt
-asar: true
+asar:
+  smartUnpack: false
 asarUnpack:
   - "**/*.node"
   - ".integrity"
 extraResources:
   - from: bin
     to: bin
+  - from: resources/images
+    to: resources/images
 publish:
   provider: github
   owner: imamrasyid
   repo: SWF-Custom-IDE
   releaseType: release
+npmRebuild: true
 win:
   target:
-    - target: nsis
+    - target: portable
       arch:
         - x64
-  icon: resources/icon.ico
-nsis:
-  oneClick: false
-  allowToChangeInstallationDirectory: true
-  createDesktopShortcut: true
-  artifactName: ${productName}-${version}-Setup.${ext}
+  icon: resources/images/logo.png
 mac:
   target:
     - dmg
     - zip
-  icon: resources/icon.icns
+  icon: resources/images/logo.png
 linux:
   target:
     - AppImage
     - deb
-  icon: resources/icon.png
+  icon: resources/images/logo.png

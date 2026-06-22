@@ -183,7 +183,7 @@ export default function MenuBar() {
         }
       }
     } else if (action === 'about') {
-      alert('NinjaSage SWF IDE v1.0.0\nBuilt on Electron + Monaco Editor + Flex SDK Compiler')
+      alert('WayangIDE SWF IDE v1.0.0\nBuilt on Electron + Monaco Editor + Flex SDK Compiler')
     } else if (action === 'undo') {
       activeEditor?.focus()
       activeEditor?.trigger('menu', 'undo', null)

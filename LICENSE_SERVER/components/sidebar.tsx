@@ -2,13 +2,15 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Key, Monitor, BarChart3, Settings, Shield } from 'lucide-react'
+import { LayoutDashboard, Key, Monitor, Smartphone, Terminal, BarChart3, Settings, Shield } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navigation = [
   { name: 'Overview', href: '/overview', icon: LayoutDashboard },
   { name: 'Licenses', href: '/licenses', icon: Key },
   { name: 'Activations', href: '/activations', icon: Monitor },
+  { name: 'Devices', href: '/devices', icon: Smartphone },
+  { name: 'Commands', href: '/commands', icon: Terminal },
   { name: 'Telemetry', href: '/telemetry', icon: BarChart3 },
   { name: 'Settings', href: '/settings', icon: Settings },
 ]
@@ -20,7 +22,7 @@ export function Sidebar() {
     <div className="flex h-full w-64 flex-col border-r bg-card">
       <div className="flex items-center gap-2 border-b p-6">
         <Shield className="h-6 w-6 text-primary" />
-        <span className="text-lg font-semibold">NinjaSage</span>
+        <span className="text-lg font-semibold">WayangIDE</span>
       </div>
       <nav className="flex-1 space-y-1 p-4">
         {navigation.map((item) => {

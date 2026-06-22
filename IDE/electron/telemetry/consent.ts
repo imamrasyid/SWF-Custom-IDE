@@ -1,7 +1,7 @@
 import Store from 'electron-store'
 
 const store = new Store<{ telemetryOptOut: boolean }>({
-  name: 'ninja-sage-settings',
+  name: 'wayangide-settings',
   defaults: { telemetryOptOut: false },
 })
 

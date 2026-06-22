@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'NinjaSage License Manager',
-  description: 'License management dashboard for NinjaSage Modding Toolkit',
+  title: 'WayangIDE License Manager',
+  description: 'License management dashboard for WayangIDE',
 }
 
 export default function RootLayout({

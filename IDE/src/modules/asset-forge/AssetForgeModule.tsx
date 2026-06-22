@@ -392,7 +392,7 @@ export default function AssetForgeModule() {
       const jsonContent = JSON.stringify({
         frames,
         meta: {
-          app: "NinjaSage SWF IDE Sprite Sheet Compiler",
+          app: "WayangIDE SWF IDE Sprite Sheet Compiler",
           version: "1.0",
           image: `${baseName}.png`,
           format: "RGBA8888",

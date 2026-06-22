@@ -5,8 +5,8 @@ import { app } from 'electron'
 import CryptoJS from 'crypto-js'
 import { getShortDeviceId } from './device-fingerprint'
 
-const LICENSE_FILE = 'ninjasage-license.enc'
-const ENCRYPTION_SALT = 'ninja-sage-license-encryption-v1'
+const LICENSE_FILE = 'wayangide-license.enc'
+const ENCRYPTION_SALT = 'wayangide-license-encryption-v1'
 
 function deriveEncryptionKey(): string {
   const deviceId = getShortDeviceId()

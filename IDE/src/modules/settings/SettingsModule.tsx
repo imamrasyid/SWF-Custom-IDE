@@ -288,7 +288,7 @@ export default function SettingsModule() {
       })
       show('User configurations applied globally!', 'success')
     } else {
-      // Save Workspace settings to file (.ninjasage/settings.json)
+      // Save Workspace settings to file (.wayangide/settings.json)
       if (!projectRoot) return
       try {
         const success = await window.electronAPI.writeWorkspaceSettings(projectRoot, workspaceSettings)
@@ -300,7 +300,7 @@ export default function SettingsModule() {
             if (key === 'compiler.defaultOutput') localStorage.setItem('swf-builder:outputPath', String(value))
             if (key === 'compiler.additionalArgs') localStorage.setItem('swf-builder:additionalArgs', String(value))
           })
-          show('Workspace configurations written to .ninjasage/settings.json!', 'success')
+          show('Workspace configurations written to .wayangide/settings.json!', 'success')
         } else {
           show('Failed to save Workspace settings.', 'error')
         }
@@ -732,7 +732,7 @@ export default function SettingsModule() {
                     <span className="text-sm font-bold text-amber-400">No License Activated</span>
                   </div>
                   <p className="text-[11px] text-slate-400">
-                    Enter your license key below to activate NinjaSage Modding Toolkit.
+                    Enter your license key below to activate WayangIDE.
                   </p>
                 </div>
               )}
@@ -811,8 +811,8 @@ export default function SettingsModule() {
             <h3 className="text-sm font-bold text-slate-200">No Workspace Root Folder Detected</h3>
             <p className="text-xs text-slate-500 leading-relaxed">
               Workspace Settings let you override configurations specifically for the current project. 
-              Please load a SWF file that is part of a Ninjasage project first to generate and modify 
-              workspace settings inside <code className="bg-slate-950 px-1 py-0.5 rounded text-[10px] text-slate-300">.ninjasage/settings.json</code>.
+              Please load a SWF file that is part of a WayangIDE project first to generate and modify 
+              workspace settings inside <code className="bg-slate-950 px-1 py-0.5 rounded text-[10px] text-slate-300">.wayangide/settings.json</code>.
             </p>
           </div>
         ) : isJsonMode ? (
@@ -824,7 +824,7 @@ export default function SettingsModule() {
                 <span>
                   {activeTab === 'user' 
                     ? "Editing global user settings.json. Saved to localStorage."
-                    : `Editing project workspace settings.json. Saved to: ${projectRoot}/.ninjasage/settings.json`}
+                    : `Editing project workspace settings.json. Saved to: ${projectRoot}/.wayangide/settings.json`}
                 </span>
               </span>
               <button
@@ -1026,7 +1026,7 @@ export default function SettingsModule() {
                       <div className="bg-slate-950/40 border border-slate-900/60 rounded-xl p-4">
                         <div className="flex items-center justify-between mb-3">
                           <div>
-                            <p className="text-xs text-slate-400">NinjaSage Modding Toolkit</p>
+                            <p className="text-xs text-slate-400">WayangIDE</p>
                             <p className="text-[10px] text-slate-600 font-mono mt-0.5">
                               Version {useAppStore.getState().currentVersion || '1.0.0'}
                             </p>

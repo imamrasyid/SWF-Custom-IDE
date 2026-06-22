@@ -2,39 +2,42 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="..">
-      <UniqueIdentifier>{13ED4249-1F9C-5F0F-2651-29A73F3A7059}</UniqueIdentifier>
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
     </Filter>
     <Filter Include="..\src">
-      <UniqueIdentifier>{F1003AD6-4B6D-45DF-3F56-5CAC869BF55E}</UniqueIdentifier>
+      <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
     </Filter>
     <Filter Include="D:">
-      <UniqueIdentifier>{86BBDC71-6ACD-FBEF-2BDD-D703B16582D3}</UniqueIdentifier>
+      <UniqueIdentifier>{E5D29F2B-0177-9942-CA95-0FF700094F89}</UniqueIdentifier>
     </Filter>
     <Filter Include="D:\Game">
-      <UniqueIdentifier>{8C0297DD-21D7-24E6-0720-2931B6E49DC4}</UniqueIdentifier>
+      <UniqueIdentifier>{C8222662-7FBC-49AF-08F2-15045837717D}</UniqueIdentifier>
     </Filter>
     <Filter Include="D:\Game\Ninja Sage Modding Tools">
-      <UniqueIdentifier>{D4415BE3-70A4-0422-99DF-67B4DA4AD609}</UniqueIdentifier>
+      <UniqueIdentifier>{FCD63C1A-527B-6114-40F9-B7BF3CE3D02D}</UniqueIdentifier>
     </Filter>
-    <Filter Include="D:\Game\Ninja Sage Modding Tools\node_modules">
-      <UniqueIdentifier>{126A39EA-1D28-5689-C126-0DA0AB5837A0}</UniqueIdentifier>
+    <Filter Include="D:\Game\Ninja Sage Modding Tools\IDE">
+      <UniqueIdentifier>{DA13DD60-87C1-DF3E-6583-598122C3BE48}</UniqueIdentifier>
     </Filter>
-    <Filter Include="D:\Game\Ninja Sage Modding Tools\node_modules\node-gyp">
-      <UniqueIdentifier>{49558BB4-6D34-CA91-A65D-85A65792DC11}</UniqueIdentifier>
+    <Filter Include="D:\Game\Ninja Sage Modding Tools\IDE\node_modules">
+      <UniqueIdentifier>{56DF7A98-063D-FB9D-485C-089023B4C16A}</UniqueIdentifier>
     </Filter>
-    <Filter Include="D:\Game\Ninja Sage Modding Tools\node_modules\node-gyp\src">
-      <UniqueIdentifier>{F1003AD6-4B6D-45DF-3F56-5CAC869BF55E}</UniqueIdentifier>
+    <Filter Include="D:\Game\Ninja Sage Modding Tools\IDE\node_modules\node-gyp">
+      <UniqueIdentifier>{77348C0E-2034-7791-74D5-63C077DF5A3B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="D:\Game\Ninja Sage Modding Tools\IDE\node_modules\node-gyp\src">
+      <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
     </Filter>
     <Filter Include="..">
-      <UniqueIdentifier>{13ED4249-1F9C-5F0F-2651-29A73F3A7059}</UniqueIdentifier>
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\license_key.cc">
       <Filter>..\src</Filter>
     </ClCompile>
-    <ClCompile Include="D:\Game\Ninja Sage Modding Tools\node_modules\node-gyp\src\win_delay_load_hook.cc">
-      <Filter>D:\Game\Ninja Sage Modding Tools\node_modules\node-gyp\src</Filter>
+    <ClCompile Include="D:\Game\Ninja Sage Modding Tools\IDE\node_modules\node-gyp\src\win_delay_load_hook.cc">
+      <Filter>D:\Game\Ninja Sage Modding Tools\IDE\node_modules\node-gyp\src</Filter>
     </ClCompile>
     <None Include="..\binding.gyp">
       <Filter>..</Filter>

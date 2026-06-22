@@ -6,7 +6,7 @@ export type AppConfig = {
   ffdecPath: string
   lastOpenedSwf?: string
   recentFiles: string[]
-  ninjasageProjectPath?: string
+  wayangideProjectPath?: string
   theme: 'light' | 'dark' | 'system'
 }
 

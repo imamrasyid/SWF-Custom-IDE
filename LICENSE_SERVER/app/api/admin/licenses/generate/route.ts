@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
 
     const payload = {
       id: licenseId,
-      product: 'ninjasage-modding-toolkit',
+      product: 'wayangide',
       type: 'lifetime',
       maxDevices: 3,
       features: ['all'],
@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
       args: [
         licenseId,
         licenseKeyHash,
-        'ninjasage-modding-toolkit',
+        'wayangide',
         'lifetime',
         3,
         JSON.stringify(['all']),

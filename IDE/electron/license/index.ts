@@ -151,7 +151,7 @@ export function activateLicense(licenseKey: string): { success: boolean; error: 
 
   const { payload, signature } = parsed
 
-  if (payload.product !== 'ninjasage-modding-toolkit') {
+  if (payload.product !== 'wayangide') {
     return { success: false, error: 'Invalid license key for this product' }
   }
 

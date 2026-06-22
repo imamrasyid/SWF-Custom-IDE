@@ -1108,7 +1108,7 @@ export default function CodeEditorModule() {
                         {
                           label: 'ns-amf',
                           kind: monacoInstance.languages.CompletionItemKind.Snippet,
-                          documentation: 'Ninja Sage AMF Service Call',
+                          documentation: 'WayangIDE AMF Service Call',
                           insertText: [
                             '// Call AMF service',
                             'NetworkManager.getInstance().sendRequest("${1:ServiceName}", "${2:methodName}", [${3:args}], function(response:Object):void {',
@@ -1125,7 +1125,7 @@ export default function CodeEditorModule() {
                         {
                           label: 'ns-popup',
                           kind: monacoInstance.languages.CompletionItemKind.Snippet,
-                          documentation: 'Ninja Sage Dialog / Pop-up Dialog',
+                          documentation: 'WayangIDE Dialog / Pop-up Dialog',
                           insertText: [
                             '// Create and show standard alert popup',
                             'DialogManager.getInstance().showAlert("${1:Title}", "${2:Message}", function():void {',
@@ -1138,7 +1138,7 @@ export default function CodeEditorModule() {
                         {
                           label: 'ns-loadasset',
                           kind: monacoInstance.languages.CompletionItemKind.Snippet,
-                          documentation: 'Ninja Sage Asset Loading',
+                          documentation: 'WayangIDE Asset Loading',
                           insertText: [
                             'AssetManager.getInstance().loadAsset("${1:asset_path}", function(asset:Object):void {',
                             '\t${2:// use loaded asset}',

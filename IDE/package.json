@@ -1,14 +1,17 @@
 {
   "author": "EyeTracker",
-  "name": "ninjasage-modding-toolkit",
+  "name": "wayangide",
   "version": "3.0.0",
-  "description": "SWF Modding Toolkit — Electron + Vite + React",
+  "description": "Wayang IDE - Custom SWF IDE",
   "main": "dist-electron/main.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && npx tsx scripts/obfuscate.ts && electron-builder --win --publish never && npx tsx scripts/flip-fuses.ts",
+    "build:clean": "npm run clean && tsc && vite build && electron-builder --win --publish never && npx tsx scripts/flip-fuses.ts",
+    "build:dev": "npm run clean && tsc && vite build && electron-builder --win --publish never",
     "build:obfuscate": "tsc && vite build && npx tsx scripts/obfuscate.ts",
     "build:package": "electron-builder --win --publish never && npx tsx scripts/flip-fuses.ts",
+    "clean": "node -e \"const fs=require('fs'); ['release','dist','dist-electron','app.asar.unpacked'].forEach(d=>{if(fs.existsSync(d))fs.rmSync(d,{recursive:true,force:true})})\"",
     "preview": "vite preview",
     "lint": "tsc --noEmit",
     "obfuscate": "npx tsx scripts/obfuscate.ts",
@@ -39,8 +42,9 @@
     "zustand": "^5.0.0"
   },
   "devDependencies": {
-    "@electron/fuses": "^1.8.0",
+    "@electron/fuses": "^2.1.1",
     "@tailwindcss/vite": "^4.3.1",
+    "@types/node": "^25.9.3",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^6.0.2",

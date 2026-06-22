@@ -6,33 +6,33 @@ import crypto from 'crypto'
 const OBFUSCATOR_OPTIONS = {
   compact: true,
   controlFlowFlattening: true,
-  controlFlowFlatteningThreshold: 1,
-  deadCodeInjection: true,
-  deadCodeInjectionThreshold: 0.3,
-  debugProtection: true,
+  controlFlowFlatteningThreshold: 0.5,
+  deadCodeInjection: false,
+  debugProtection: false,
   disableConsoleOutput: false,
   identifierNamesGenerator: 'hexadecimal',
   log: false,
   numbersToExpressions: true,
   renameGlobals: false,
-  selfDefending: true,
+  selfDefending: false,
   simplify: true,
-  splitStrings: true,
-  splitStringsChunkLength: 5,
+  splitStrings: false,
   stringArray: true,
   stringArrayCallsCount: 1,
-  stringArrayEncoding: ['base64'],
+  stringArrayEncoding: ['rc4'],
   stringArrayIndexShift: true,
   stringArrayRotate: true,
   stringArrayShuffle: true,
-  stringArrayWrappersCount: 1,
+  stringArrayWrappersCount: 2,
   stringArrayWrappersChainedCalls: true,
-  stringArrayWrappersParametersMaxCount: 2,
+  stringArrayWrappersParametersMaxCount: 4,
   stringArrayWrappersType: 'function',
-  stringArrayThreshold: 1,
+  stringArrayThreshold: 0.75,
   transformObjectKeys: true,
-  unicodeEscapeSequence: true,
-  target: 'node'
+  unicodeEscapeSequence: false,
+  target: 'node',
+  sourceMap: false,
+  splitStringsChunkLength: 10,
 }
 
 const TARGET_FILES = ['main.js', 'preload.js']
@@ -84,7 +84,7 @@ function main() {
     process.exit(1)
   }
 
-  console.log('=== NinjaSage Build Protection ===\n')
+  console.log('=== WayangIDE Build Protection ===\n')
   console.log('Step 1: Obfuscating main process files...\n')
 
   for (const file of TARGET_FILES) {

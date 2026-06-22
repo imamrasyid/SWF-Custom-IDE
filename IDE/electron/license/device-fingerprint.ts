@@ -2,7 +2,7 @@ import { machineIdSync } from 'node-machine-id'
 import os from 'os'
 import crypto from 'crypto'
 
-const FINGERPRINT_SALT = 'ninja-sage-device-v1'
+const FINGERPRINT_SALT = 'wayangide-device-v1'
 
 function getCpuInfo(): string {
   const cpus = os.cpus()

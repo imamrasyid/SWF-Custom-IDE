@@ -151,18 +151,18 @@ const PROJECT_TEMPLATES = {
         },
         files: ["src/Main.as"]
       }, null, 2),
-      '.ninjasage/settings.json': (name: string) => JSON.stringify({
+      '.wayangide/settings.json': (name: string) => JSON.stringify({
         "workspace.projectName": name,
         "compiler.sdkPath": "",
         "compiler.defaultMain": "src/Main.as",
         "compiler.defaultOutput": `build/${name}.swf`
       }, null, 2)
     },
-    folders: ['src', 'build', '.ninjasage']
+    folders: ['src', 'build', '.wayangide']
   },
-  ninjasage: {
-    name: 'NinjaSage Mod',
-    description: 'Template untuk modding game NinjaSage dengan struktur folder lengkap',
+  wayangide: {
+    name: 'WayangIDE Mod',
+    description: 'Template untuk WayangIDE dengan struktur folder lengkap',
     files: {
       'src/Main.as': (name: string) => `package {
     import flash.display.Sprite;
@@ -190,7 +190,7 @@ const PROJECT_TEMPLATES = {
         },
         files: ["src/Main.as"]
       }, null, 2),
-      '.ninjasage/settings.json': (name: string) => JSON.stringify({
+      '.wayangide/settings.json': (name: string) => JSON.stringify({
         "workspace.projectName": name,
         "compiler.sdkPath": "",
         "compiler.defaultMain": "src/Main.as",
@@ -202,7 +202,7 @@ const PROJECT_TEMPLATES = {
       'src/items/.gitkeep': '',
       'src/enemy/.gitkeep': ''
     },
-    folders: ['src', 'src/classes', 'src/skills', 'src/items', 'src/enemy', 'build', '.ninjasage']
+    folders: ['src', 'src/classes', 'src/skills', 'src/items', 'src/enemy', 'build', '.wayangide']
   },
   empty: {
     name: 'Empty Project',
@@ -217,13 +217,13 @@ const PROJECT_TEMPLATES = {
         },
         files: []
       }, null, 2),
-      '.ninjasage/settings.json': (name: string) => JSON.stringify({
+      '.wayangide/settings.json': (name: string) => JSON.stringify({
         "workspace.projectName": name,
         "compiler.sdkPath": "",
         "compiler.defaultMain": "",
         "compiler.defaultOutput": `build/${name}.swf`
       }, null, 2)
     },
-    folders: ['src', 'build', '.ninjasage']
+    folders: ['src', 'build', '.wayangide']
   }
 }

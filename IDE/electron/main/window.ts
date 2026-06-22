@@ -1,7 +1,29 @@
-import { BrowserWindow, dialog, ipcMain, protocol } from 'electron'
+import { BrowserWindow, dialog, ipcMain, protocol, app } from 'electron'
 import path from 'path'
 import fs from 'fs'
 import { getOrExtractAssetPath } from '../services/ffdec-service'
+
+function getLogoPath(): string {
+  // In ASAR, __dirname points to dist-electron directory
+  // Need to get app path relative to the app root
+  const appPath = app.getAppPath()
+  
+  // Try multiple locations
+  const candidates = [
+    path.join(appPath, 'resources/images/logo.png'),
+    path.join(appPath, '../resources/images/logo.png'),
+    path.join(__dirname, '../../resources/images/logo.png'),
+  ]
+  
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) {
+      return candidate
+    }
+  }
+  
+  // Fallback to just the icon name (Electron will use default)
+  return 'logo.png'
+}
 
 let mainWindow: BrowserWindow | null = null
 
@@ -16,13 +38,15 @@ export function createWindow(): BrowserWindow {
     minWidth: 900,
     minHeight: 600,
     frame: false,
+    icon: getLogoPath(),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
-      nodeIntegration: false
+      nodeIntegration: false,
+      sandbox: true
     },
     show: false,
-    title: 'NinjaSage Modding Toolkit'
+    title: 'WayangIDE'
   })
 
   mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
@@ -39,10 +63,18 @@ export function createWindow(): BrowserWindow {
     mainWindow?.show()
   })
 
+  mainWindow.on('closed', () => {
+    mainWindow = null
+  })
+
   if (process.env.VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL)
   } else {
-    mainWindow.loadFile(path.join(__dirname, '../dist/index.html'))
+    // Load from dist directory inside ASAR
+    const indexPath = path.join(__dirname, '../dist/index.html')
+    console.log('[Window] Loading HTML from:', indexPath)
+    console.log('[Window] File exists:', fs.existsSync(indexPath))
+    mainWindow.loadFile(indexPath)
   }
 
   return mainWindow
@@ -55,6 +87,7 @@ export function openToolWindow(toolName: string) {
     minWidth: 800,
     minHeight: 500,
     frame: false,
+    icon: getLogoPath(),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,

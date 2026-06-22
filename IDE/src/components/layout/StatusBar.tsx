@@ -6,7 +6,7 @@ export default function StatusBar() {
   const swfPath = useAppStore((s) => s.swfPath)
   const swfData = useAppStore((s) => s.swfData)
   const projectRoot = useAppStore((s) => s.projectRoot)
-  const isNinjasageProject = useAppStore((s) => s.isNinjasageProject)
+  const isNinjasageProject = useAppStore((s) => s.isWayangIDEProject)
   const isBottomPanelOpen = useAppStore((s) => s.isBottomPanelOpen)
   const toggleBottomPanel = useAppStore((s) => s.toggleBottomPanel)
   const editorCursor = useAppStore((s) => s.editorCursor)
@@ -133,7 +133,7 @@ export default function StatusBar() {
             {isNinjasageProject && (
               <span className="text-[10px] bg-emerald-950/40 text-emerald-500 border border-emerald-900/30 px-1 rounded flex items-center gap-0.5">
                 <ShieldCheck size={9} />
-                NinjaSage Project
+                WayangIDE Project
               </span>
             )}
           </div>

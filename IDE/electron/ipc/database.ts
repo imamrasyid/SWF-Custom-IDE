@@ -16,7 +16,7 @@ function save() {
 export function initDatabase() {
   const userDataPath = app.getPath('userData')
   fs.mkdirSync(userDataPath, { recursive: true })
-  statePath = path.join(userDataPath, 'ninjasage-state.json')
+  statePath = path.join(userDataPath, 'wayangide-state.json')
   try {
     if (fs.existsSync(statePath)) {
       state = JSON.parse(fs.readFileSync(statePath, 'utf8'))

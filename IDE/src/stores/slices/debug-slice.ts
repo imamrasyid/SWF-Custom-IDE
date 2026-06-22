@@ -38,10 +38,10 @@ const initialState: DebugState = {
   isPaused: false,
   currentFile: null,
   currentLine: null,
-  breakpoints: safeJsonParse('ninjasage:breakpoints', []),
+  breakpoints: safeJsonParse('wayangide:breakpoints', []),
   callStack: [],
   variables: [],
-  watchExpressions: safeJsonParse('ninjasage:watchExpressions', []),
+  watchExpressions: safeJsonParse('wayangide:watchExpressions', []),
   watchResults: [],
   debugOutput: []
 }
@@ -57,19 +57,19 @@ export const createDebugSlice: StateCreator<AppState, [], [], DebugSlice> = (set
 
   addBreakpoint: (file, line, id, condition) => set((state) => {
     const breakpoints = [...state.breakpoints.filter(b => !(b.file === file && b.line === line)), { file, line, id, condition }]
-    localStorage.setItem('ninjasage:breakpoints', JSON.stringify(breakpoints))
+    localStorage.setItem('wayangide:breakpoints', JSON.stringify(breakpoints))
     return { breakpoints }
   }),
 
   removeBreakpoint: (file, line) => set((state) => {
     const breakpoints = state.breakpoints.filter(b => !(b.file === file && b.line === line))
-    localStorage.setItem('ninjasage:breakpoints', JSON.stringify(breakpoints))
+    localStorage.setItem('wayangide:breakpoints', JSON.stringify(breakpoints))
     return { breakpoints }
   }),
 
   clearBreakpoints: (file) => set((state) => {
     const breakpoints = file ? state.breakpoints.filter(b => b.file !== file) : []
-    localStorage.setItem('ninjasage:breakpoints', JSON.stringify(breakpoints))
+    localStorage.setItem('wayangide:breakpoints', JSON.stringify(breakpoints))
     return { breakpoints }
   }),
 
@@ -79,13 +79,13 @@ export const createDebugSlice: StateCreator<AppState, [], [], DebugSlice> = (set
 
   addWatchExpression: (expression) => set((state) => {
     const watchExpressions = [...state.watchExpressions.filter(e => e !== expression), expression]
-    localStorage.setItem('ninjasage:watchExpressions', JSON.stringify(watchExpressions))
+    localStorage.setItem('wayangide:watchExpressions', JSON.stringify(watchExpressions))
     return { watchExpressions }
   }),
 
   removeWatchExpression: (expression) => set((state) => {
     const watchExpressions = state.watchExpressions.filter(e => e !== expression)
-    localStorage.setItem('ninjasage:watchExpressions', JSON.stringify(watchExpressions))
+    localStorage.setItem('wayangide:watchExpressions', JSON.stringify(watchExpressions))
     return { watchExpressions }
   }),
 

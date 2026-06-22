@@ -20,24 +20,30 @@ import { startSession, endSession, flushOnExit, trackCrash } from './telemetry'
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
 
-// Run tamper check before anything else
-if (!performTamperCheck()) {
-  app.quit()
-  process.exit(1)
-}
-
 protocol.registerSchemesAsPrivileged([
   { scheme: 'ns-asset', privileges: { standard: true, secure: true, supportFetchAPI: true, corsEnabled: true } }
 ])
 
 app.whenReady().then(() => {
+  console.log('[Main] App is ready, starting initialization...')
+  
+  // Run tamper check AFTER app is ready (so dialogs work)
+  if (!performTamperCheck()) {
+    console.log('[Main] Tamper check failed, quitting')
+    app.quit()
+    process.exit(1)
+  }
+
   startSession()
 
   process.on('uncaughtException', (error) => {
+    console.error('[Main] Uncaught exception:', error)
     trackCrash(error, true)
   })
 
+  console.log('[Main] Initializing database...')
   initDatabase()
+  
   // Register custom protocol for asset loading
   protocol.handle('ns-asset', async (request) => {
     try {
@@ -82,6 +88,7 @@ app.whenReady().then(() => {
     }
   })
 
+  console.log('[Main] Registering IPC handlers...')
   // Register all IPC handlers
   registerWindowIpc()
   registerTerminalIpc()
@@ -101,24 +108,31 @@ app.whenReady().then(() => {
   ipcMain.handle('updater:install', quitAndInstall)
   ipcMain.handle('updater:version', getCurrentVersion)
   
+  console.log('[Main] Initializing services...')
   // Initialize services
   initUpdater()
   createMenu()
   
+  console.log('[Main] Creating main window...')
   // Create main window
   const mainWindow = createWindow()
   setUpdaterWindow(mainWindow)
+  
+  console.log('[Main] Initialization complete')
 })
 
 app.on('window-all-closed', () => {
+  console.log('[Main] All windows closed')
   if (process.platform !== 'darwin') app.quit()
 })
 
 app.on('before-quit', () => {
+  console.log('[Main] Before quit, flushing telemetry...')
   endSession()
   flushOnExit()
 })
 
 app.on('activate', () => {
+  console.log('[Main] Activate event')
   if (getMainWindow() === null) createWindow()
 })

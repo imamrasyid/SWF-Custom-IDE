@@ -3,7 +3,7 @@ import crypto from 'crypto'
 import * as fs from 'fs'
 import * as path from 'path'
 
-const PRODUCT_ID = 'ninjasage-modding-toolkit'
+const PRODUCT_ID = 'wayangide'
 
 interface LicensePayload {
   id: string
@@ -32,7 +32,7 @@ function toBase64Url(bytes: Uint8Array): string {
 }
 
 function xorEncodeKey(publicKey: Uint8Array): { encoded: string; xorKey: string } {
-  const xorKeyStr = 'NSAGENinjaSage-v1-2026-PublicKey'
+  const xorKeyStr = 'WAYANGIDE-v1-2026-PublicKey'
   const xorKey = new TextEncoder().encode(xorKeyStr)
 
   const encoded = new Uint8Array(publicKey.length)
@@ -71,7 +71,7 @@ async function main() {
 
   if (args.help) {
     console.log(`
-NinjaSage License Key Generator
+WayangIDE License Key Generator
 ================================
 
 Usage: npx tsx scripts/generate-license.ts [options]

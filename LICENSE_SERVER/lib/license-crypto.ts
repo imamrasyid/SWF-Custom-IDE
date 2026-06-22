@@ -1,6 +1,6 @@
 import nacl from 'tweetnacl'
 
-const PUBLIC_KEY_B64URL = process.env.PUBLIC_KEY_B64URL || 'qs8gGpTMtdOFPdNAk9pgqMW8TAN3P8DdEYdJEGDqa0M'
+const PUBLIC_KEY_B64URL = process.env.PUBLIC_KEY_B64URL || 'DktWZyaUiuBNy-d9tkjCqo7FuFiLad0h2h56IeccoXo'
 
 function fromBase64Url(str: string): Uint8Array {
   let b64 = str.replace(/-/g, '+').replace(/_/g, '/')

@@ -20,7 +20,7 @@ export interface SwfSlice {
   loadingLogs: string[]
   recentFiles: string[]
   projectRoot: string | null
-  isNinjasageProject: boolean
+  isWayangIDEProject: boolean
   assetSwfPaths: string[]
   assetSwfsData: Record<string, SwfData>
   activeAssetSourcePath: string | null
@@ -128,25 +128,25 @@ export const createSwfSlice: StateCreator<AppState, [], [], SwfSlice> = (set, ge
   isLoading: false,
   loadingStatus: '',
   loadingLogs: [],
-  recentFiles: safeJsonParse('ninjasage:recentFiles', []),
+  recentFiles: safeJsonParse('wayangide:recentFiles', []),
   projectRoot: null,
-  isNinjasageProject: false,
+  isWayangIDEProject: false,
   assetSwfPaths: [],
   assetSwfsData: {},
   activeAssetSourcePath: null,
-  workspaces: safeJsonParse('ninjasage:workspaces', []),
+  workspaces: safeJsonParse('wayangide:workspaces', []),
 
   setSwf: (path, data) =>
     set((state) => {
       const recent = [path, ...state.recentFiles.filter((f) => f !== path)].slice(0, 10)
-      localStorage.setItem('ninjasage:recentFiles', JSON.stringify(recent))
+      localStorage.setItem('wayangide:recentFiles', JSON.stringify(recent))
       return { swfPath: path, swfData: data, activeModule: 'explorer' as ModuleName, recentFiles: recent }
     }),
 
   setActiveAssetSourcePath: (path) => set({ activeAssetSourcePath: path }),
 
   setProject: (root) =>
-    set({ projectRoot: root, isNinjasageProject: root !== null }),
+    set({ projectRoot: root, isWayangIDEProject: root !== null }),
 
   loadSwf: async (rawPath, force = false) => {
     const path = normalizeSwfPath(rawPath)
@@ -171,14 +171,14 @@ export const createSwfSlice: StateCreator<AppState, [], [], SwfSlice> = (set, ge
         }
 
         const recent = [path, ...state.recentFiles.filter((f) => f !== path)].slice(0, 10)
-        localStorage.setItem('ninjasage:recentFiles', JSON.stringify(recent))
+        localStorage.setItem('wayangide:recentFiles', JSON.stringify(recent))
         set({
           swfPath: path,
           swfData: data,
           activeModule: 'explorer' as ModuleName,
           recentFiles: recent,
           projectRoot: project?.root ?? null,
-          isNinjasageProject: project !== null,
+          isWayangIDEProject: project !== null,
           isLoading: false
         })
         get().addNotification(`Loaded SWF from cache: ${path.split(/[\\/]/).pop()}`, 'info')
@@ -252,14 +252,14 @@ export const createSwfSlice: StateCreator<AppState, [], [], SwfSlice> = (set, ge
       }
 
       const recent = [path, ...state.recentFiles.filter((f) => f !== path)].slice(0, 10)
-      localStorage.setItem('ninjasage:recentFiles', JSON.stringify(recent))
+      localStorage.setItem('wayangide:recentFiles', JSON.stringify(recent))
       set({
         swfPath: path,
         swfData: initialData,
         activeModule: 'explorer' as ModuleName,
         recentFiles: recent,
         projectRoot: project?.root ?? null,
-        isNinjasageProject: project !== null,
+        isWayangIDEProject: project !== null,
         isLoading: false
       })
       get().addNotification(`Loaded SWF archive: ${path.split(/[\\/]/).pop()}`, 'success')
@@ -435,7 +435,7 @@ export const createSwfSlice: StateCreator<AppState, [], [], SwfSlice> = (set, ge
     }
     set((state) => {
       const workspaces = [...state.workspaces.map(w => ({ ...w, isActive: false })), workspace]
-      localStorage.setItem('ninjasage:workspaces', JSON.stringify(workspaces))
+      localStorage.setItem('wayangide:workspaces', JSON.stringify(workspaces))
       return { workspaces }
     })
   },
@@ -443,7 +443,7 @@ export const createSwfSlice: StateCreator<AppState, [], [], SwfSlice> = (set, ge
   removeWorkspace: (id) => {
     set((state) => {
       const workspaces = state.workspaces.filter(w => w.id !== id)
-      localStorage.setItem('ninjasage:workspaces', JSON.stringify(workspaces))
+      localStorage.setItem('wayangide:workspaces', JSON.stringify(workspaces))
       return { workspaces }
     })
   },
@@ -457,7 +457,7 @@ export const createSwfSlice: StateCreator<AppState, [], [], SwfSlice> = (set, ge
       ...w,
       isActive: w.id === id
     }))
-    localStorage.setItem('ninjasage:workspaces', JSON.stringify(workspaces))
+    localStorage.setItem('wayangide:workspaces', JSON.stringify(workspaces))
     set({ workspaces, projectRoot: activeWs.projectRoot })
 
     if (activeWs.swfPath && activeWs.swfPath !== state.swfPath) {

@@ -136,8 +136,8 @@ export default function AmfBuilderModule() {
     return (
       <div className="module-empty flex flex-col items-center justify-center p-8 text-slate-500 h-full bg-[#070b13]">
         <Terminal size={48} className="mb-2 text-slate-600 animate-pulse" />
-        <p className="text-sm">NinjaSage Project Required</p>
-        <p className="text-xs text-slate-600 mt-1">Please open a valid NinjaSage project to build AMF Services.</p>
+        <p className="text-sm">WayangIDE Project Required</p>
+        <p className="text-xs text-slate-600 mt-1">Please open a valid WayangIDE project to build AMF Services.</p>
       </div>
     )
   }

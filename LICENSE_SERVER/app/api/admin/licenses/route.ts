@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
       args: [
         id,
         license_key_hash,
-        product || 'ninjasage-modding-toolkit',
+        product || 'wayangide',
         type || 'lifetime',
         max_activations || 3,
         JSON.stringify(features || ['all']),
