@@ -1,4 +1,5 @@
 import path from 'path'
+import fs from 'fs'
 import { LicensePayload, verifyLicense, parseLicenseKey, buildLicenseKey, signLicense, getEmbeddedPublicKey } from './license-crypto'
 import { saveLicense, loadLicense, deleteLicense, StoredLicense } from './license-store'
 import { generateDeviceFingerprint, getShortDeviceId } from './device-fingerprint'
@@ -58,6 +59,30 @@ export interface LicenseStatus {
 let cachedLicense: StoredLicense | null = null
 let cachedStatus: LicenseStatus | null = null
 
+export function isLicenseDisabled(): boolean {
+  if (process.env.DISABLE_LICENSE === 'true') {
+    return true
+  }
+  try {
+    const possibleEnvPaths = [
+      path.join(process.cwd(), '.env'),
+      path.join(app?.getAppPath() || '', '.env'),
+      path.join(path.dirname(app?.getPath('exe') || ''), '.env')
+    ]
+    for (const envPath of possibleEnvPaths) {
+      if (envPath && fs.existsSync(envPath)) {
+        const content = fs.readFileSync(envPath, 'utf8')
+        if (/^\s*DISABLE_LICENSE\s*=\s*true/m.test(content)) {
+          return true
+        }
+      }
+    }
+  } catch (e) {
+    // Ignore errors
+  }
+  return false
+}
+
 function verifyPublicKeyIntegrity(): boolean {
   const nativeKey = getPublicKeyFromNative()
   if (!nativeKey) return true
@@ -70,6 +95,19 @@ function verifyPublicKeyIntegrity(): boolean {
 }
 
 export function getLicenseStatus(): LicenseStatus {
+  if (isLicenseDisabled()) {
+    cachedStatus = {
+      isValid: true,
+      isActivated: true,
+      licenseId: 'disabled_license_env',
+      licenseType: 'lifetime',
+      features: ['all'],
+      activatedAt: Date.now(),
+      error: null,
+    }
+    return cachedStatus
+  }
+
   if (cachedStatus) return cachedStatus
 
   if (!verifyPublicKeyIntegrity()) {
@@ -255,6 +293,9 @@ export function getActivatedLicense(): StoredLicense | null {
 }
 
 export function isLicenseActivated(): boolean {
+  if (isLicenseDisabled()) {
+    return true
+  }
   const status = getLicenseStatus()
   return status.isValid && status.isActivated
 }
@@ -266,6 +307,16 @@ export function getLicenseInfo(): {
   activatedAt: number | null
   deviceBound: boolean
 } {
+  if (isLicenseDisabled()) {
+    return {
+      licenseId: 'disabled_license_env',
+      type: 'lifetime',
+      features: ['all'],
+      activatedAt: Date.now(),
+      deviceBound: false,
+    }
+  }
+
   const stored = loadLicense()
   if (!stored) {
     return {

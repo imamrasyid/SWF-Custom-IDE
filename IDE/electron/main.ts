@@ -15,6 +15,7 @@ import { registerGitIpc } from './ipc/git'
 import { initDatabase, registerDatabaseIpc } from './ipc/database'
 import { registerWatcherIpc } from './ipc/watcher'
 import { registerLicenseIpc } from './ipc/license'
+import { registerBinariesIpc } from './ipc/binaries'
 import { performTamperCheck } from './license/tamper-check'
 import { startSession, endSession, flushOnExit, trackCrash } from './telemetry'
 
@@ -102,6 +103,7 @@ app.whenReady().then(() => {
   registerDatabaseIpc()
   registerWatcherIpc()
   registerLicenseIpc()
+  registerBinariesIpc()
 
   ipcMain.handle('updater:check', checkForUpdates)
   ipcMain.handle('updater:download', downloadUpdate)

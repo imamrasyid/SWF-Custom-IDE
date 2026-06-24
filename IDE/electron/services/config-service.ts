@@ -4,6 +4,8 @@ import path from 'path'
 
 export type AppConfig = {
   ffdecPath: string
+  jrePath?: string
+  flexSdkPath?: string
   lastOpenedSwf?: string
   recentFiles: string[]
   wayangideProjectPath?: string
@@ -94,3 +96,73 @@ export function saveConfig(config: AppConfig): void {
     throw new Error(`Failed to save configuration: ${err instanceof Error ? err.message : String(err)}`)
   }
 }
+
+export function getBinaryStatus() {
+  const config = loadConfig()
+  
+  // Check JRE
+  let hasJre = false
+  let resolvedJrePath = config.jrePath || ''
+  if (resolvedJrePath && fs.existsSync(resolvedJrePath)) {
+    hasJre = true
+  } else {
+    // Check portable or default
+    const embeddedJava = getPortablePath(path.join('bin', 'jre', 'bin', process.platform === 'win32' ? 'java.exe' : 'java'))
+    if (embeddedJava) {
+      hasJre = true
+      resolvedJrePath = embeddedJava
+    } else {
+      // Check %APPDATA%/wayangide/bin/jre/bin/java.exe
+      const appDataJava = path.join(app.getPath('userData'), 'bin', 'jre', 'bin', process.platform === 'win32' ? 'java.exe' : 'java')
+      if (fs.existsSync(appDataJava)) {
+        hasJre = true
+        resolvedJrePath = appDataJava
+      }
+    }
+  }
+
+  // Check FFDec
+  let hasFfdec = false
+  let resolvedFfdecPath = config.ffdecPath || ''
+  if (resolvedFfdecPath && fs.existsSync(resolvedFfdecPath)) {
+    hasFfdec = true
+  } else {
+    const embeddedFfdec = getPortablePath(path.join('bin', 'ffdec', 'ffdec.jar')) || getPortablePath(path.join('bin', 'ffdec', 'ffdec-cli.exe'))
+    if (embeddedFfdec) {
+      hasFfdec = true
+      resolvedFfdecPath = embeddedFfdec
+    } else {
+      const appDataFfdec = path.join(app.getPath('userData'), 'bin', 'ffdec', 'ffdec.jar')
+      if (fs.existsSync(appDataFfdec)) {
+        hasFfdec = true
+        resolvedFfdecPath = appDataFfdec
+      }
+    }
+  }
+
+  // Check Flex SDK
+  let hasFlex = false
+  let resolvedFlexPath = config.flexSdkPath || ''
+  if (resolvedFlexPath && fs.existsSync(resolvedFlexPath)) {
+    hasFlex = true
+  } else {
+    const embeddedFlex = getPortablePath(path.join('bin', 'flex-sdk'))
+    if (embeddedFlex) {
+      hasFlex = true
+      resolvedFlexPath = embeddedFlex
+    } else {
+      const appDataFlex = path.join(app.getPath('userData'), 'bin', 'flex-sdk', 'bin', process.platform === 'win32' ? 'mxmlc.bat' : 'mxmlc')
+      if (fs.existsSync(appDataFlex)) {
+        hasFlex = true
+        resolvedFlexPath = path.dirname(path.dirname(appDataFlex))
+      }
+    }
+  }
+
+  return {
+    jre: { installed: hasJre, path: resolvedJrePath },
+    ffdec: { installed: hasFfdec, path: resolvedFfdecPath },
+    flexSdk: { installed: hasFlex, path: resolvedFlexPath }
+  }
+}
+

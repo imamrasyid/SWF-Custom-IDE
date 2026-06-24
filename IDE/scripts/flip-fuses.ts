@@ -30,7 +30,7 @@ async function main() {
       [FuseV1Options.EnableNodeCliInspectArguments]: false,
       [FuseV1Options.OnlyLoadAppFromAsar]: false,
       [FuseV1Options.LoadBrowserProcessSpecificV8Snapshot]: false,
-      [FuseV1Options.GrantFileProtocolExtraPrivileges]: false,
+      [FuseV1Options.GrantFileProtocolExtraPrivileges]: true,
     })
 
     console.log(`Fuses flipped successfully! (${result} bytes written)`)
@@ -41,7 +41,7 @@ async function main() {
     console.log('  EnableNodeCliInspectArguments:            DISABLE')
     console.log('  OnlyLoadAppFromAsar:                      DISABLE')
     console.log('  LoadBrowserProcessSpecificV8Snapshot:     DISABLE')
-    console.log('  GrantFileProtocolExtraPrivileges:         DISABLE')
+    console.log('  GrantFileProtocolExtraPrivileges:         ENABLE')
     console.log('\n✓ Fuses flipped. App is ready for distribution.')
   } catch (error) {
     console.error('Failed to flip fuses:')

@@ -6,6 +6,7 @@ dist-electron/
 release/
 # Binaries & SDKs (large files)
 bin/
+bin_backup/
 ffdec/
 resources/
 # Electron builder

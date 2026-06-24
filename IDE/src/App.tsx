@@ -20,6 +20,7 @@ import CommandPalette from './components/layout/CommandPalette'
 import ErrorBoundary from './components/layout/ErrorBoundary'
 import UpdateBanner from './components/layout/UpdateBanner'
 import ActivationScreen from './components/layout/ActivationScreen'
+import { SetupWizard } from './components/SetupWizard'
 
 export default function App() {
   const swfPath = useAppStore((s) => s.swfPath)
@@ -31,12 +32,19 @@ export default function App() {
   const showActivationScreen = useAppStore((s) => s.showActivationScreen)
   const licenseLoading = useAppStore((s) => s.licenseLoading)
   const refreshLicenseStatus = useAppStore((s) => s.refreshLicenseStatus)
+  const binariesLoading = useAppStore((s) => s.binariesLoading)
+  const hasMissingBinaries = useAppStore((s) => s.hasMissingBinaries)
+  const checkBinariesStatus = useAppStore((s) => s.checkBinariesStatus)
   const { toasts, show, remove } = useToast()
 
-  // Check license status on mount
+  // Check license and binaries status on mount
   useEffect(() => {
+    console.log('App mounted, checking status...')
     refreshLicenseStatus()
-  }, [refreshLicenseStatus])
+    checkBinariesStatus()
+  }, []) // Empty dependency array to run only once on mount
+
+  console.log('[App Render] licenseLoading:', licenseLoading, 'binariesLoading:', binariesLoading, 'hasMissingBinaries:', hasMissingBinaries)
 
   useEffect(() => {
     const matchKeybinding = (e: KeyboardEvent, keybindingStr: string) => {
@@ -115,6 +123,8 @@ export default function App() {
   const standaloneTool = urlParams.get('standalone')
 
   useEffect(() => {
+    if (!window.electronAPI) return
+
     window.electronAPI.onMenuAction((action) => {
       if (action === 'open-swf') {
         handleOpenSwf()
@@ -327,7 +337,7 @@ export default function App() {
 
   const currentTheme = localStorage.getItem('setting:appearance.theme') || 'slate'
 
-  if (licenseLoading) {
+  if (licenseLoading || (binariesLoading && !hasMissingBinaries)) {
     return (
       <div className="app-container flex flex-col h-screen w-screen overflow-hidden items-center justify-center bg-[#080c14]">
         <div className="w-10 h-10 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
@@ -339,6 +349,15 @@ export default function App() {
     return (
       <>
         <ActivationScreen />
+        <ToastContainer toasts={toasts} onRemove={remove} />
+      </>
+    )
+  }
+
+  if (hasMissingBinaries) {
+    return (
+      <>
+        <SetupWizard />
         <ToastContainer toasts={toasts} onRemove={remove} />
       </>
     )

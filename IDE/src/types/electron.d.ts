@@ -156,6 +156,30 @@ interface ElectronAPI {
   isLicenseActivated: () => Promise<boolean>
   getDeviceFingerprint: () => Promise<string>
   getDeviceId: () => Promise<string>
+
+  // Binaries Downloader
+  getBinaryStatus: () => Promise<{
+    jre: { installed: boolean; path: string }
+    ffdec: { installed: boolean; path: string }
+    flexSdk: { installed: boolean; path: string }
+  }>
+  checkDiskSpace: () => Promise<{ freeBytes: number; hasEnoughSpace: boolean }>
+  downloadBinaries: () => Promise<boolean>
+  cancelBinariesDownload: () => Promise<boolean>
+  selectLocalBinary: (type: 'jre' | 'ffdec' | 'flexSdk') => Promise<{
+    jre: { installed: boolean; path: string }
+    ffdec: { installed: boolean; path: string }
+    flexSdk: { installed: boolean; path: string }
+  } | null>
+  onDownloaderProgress: (callback: (data: {
+    file: string
+    percent: number
+    downloadedBytes: number
+    totalBytes: number
+    speed: string
+    status: 'downloading' | 'verifying' | 'extracting' | 'completed' | 'error'
+    error?: string
+  }) => void) => () => void
 }
 
 interface Window {

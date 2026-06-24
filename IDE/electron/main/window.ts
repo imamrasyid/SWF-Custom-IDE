@@ -8,8 +8,14 @@ function getLogoPath(): string {
   // Need to get app path relative to the app root
   const appPath = app.getAppPath()
   
+  const isWin = process.platform === 'win32'
+  const preferredIcon = isWin ? 'logo.ico' : 'logo_square.png'
+  
   // Try multiple locations
   const candidates = [
+    path.join(appPath, `resources/images/${preferredIcon}`),
+    path.join(appPath, `../resources/images/${preferredIcon}`),
+    path.join(__dirname, `../../resources/images/${preferredIcon}`),
     path.join(appPath, 'resources/images/logo.png'),
     path.join(appPath, '../resources/images/logo.png'),
     path.join(__dirname, '../../resources/images/logo.png'),
@@ -22,7 +28,7 @@ function getLogoPath(): string {
   }
   
   // Fallback to just the icon name (Electron will use default)
-  return 'logo.png'
+  return isWin ? 'logo.ico' : 'logo.png'
 }
 
 let mainWindow: BrowserWindow | null = null
@@ -43,7 +49,7 @@ export function createWindow(): BrowserWindow {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
-      sandbox: true
+      sandbox: false
     },
     show: false,
     title: 'WayangIDE'

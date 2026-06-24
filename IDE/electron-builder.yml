@@ -8,6 +8,7 @@ files:
   - dist-electron
   - dist
   - native/prebuilt
+  - .env
 asar:
   smartUnpack: false
 asarUnpack:
@@ -29,14 +30,14 @@ win:
     - target: portable
       arch:
         - x64
-  icon: resources/images/logo.png
+  icon: resources/images/logo.ico
 mac:
   target:
     - dmg
     - zip
-  icon: resources/images/logo.png
+  icon: resources/images/logo_square.png
 linux:
   target:
     - AppImage
     - deb
-  icon: resources/images/logo.png
+  icon: resources/images/logo_square.png

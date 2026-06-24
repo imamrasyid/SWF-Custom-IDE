@@ -6,6 +6,7 @@ import tailwind from '@tailwindcss/vite'
 import path from 'path'
 
 export default defineConfig({
+  base: './',
   plugins: [
     tailwind(),
     react(),

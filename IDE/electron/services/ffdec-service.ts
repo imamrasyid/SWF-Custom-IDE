@@ -1,6 +1,6 @@
 import { execFile, execSync } from 'child_process'
 import { ipcMain, dialog, BrowserWindow } from 'electron'
-import { loadConfig, getPortablePath } from './config-service'
+import { loadConfig, getPortablePath, getBinaryStatus } from './config-service'
 import fs from 'fs'
 import path from 'path'
 import os from 'os'
@@ -13,13 +13,13 @@ export type FfdecResult = {
 }
 
 function getFfdecPath(): string {
-  return loadConfig().ffdecPath
+  return getBinaryStatus().ffdec.path || loadConfig().ffdecPath
 }
 
 function getJavaPath(): string {
-  const embeddedJava = getPortablePath(path.join('bin', 'jre', 'bin', process.platform === 'win32' ? 'java.exe' : 'java'))
-  if (embeddedJava) {
-    return embeddedJava
+  const binStatus = getBinaryStatus()
+  if (binStatus.jre.installed && binStatus.jre.path) {
+    return binStatus.jre.path
   }
   return 'java'
 }
@@ -752,11 +752,13 @@ export function registerFfdecIpc() {
 
   ipcMain.handle('swf:compile', async (event, projectRoot: string, sdkPath: string, mainFile: string, outputFile: string, additionalArgs: string[]): Promise<{ success: boolean; log: string }> => {
     return new Promise((resolve) => {
-      // Auto-detect embedded Flex SDK if sdkPath is missing, invalid or is default placeholder
+      // Auto-detect Flex SDK
       let resolvedSdkPath = sdkPath
-      const embeddedFlexSdk = getPortablePath(path.join('bin', 'flex-sdk'))
-      if (embeddedFlexSdk && (!sdkPath || !fs.existsSync(sdkPath) || sdkPath.includes('flex_sdk'))) {
-        resolvedSdkPath = embeddedFlexSdk
+      const binStatus = getBinaryStatus()
+      if (!sdkPath || !fs.existsSync(sdkPath) || sdkPath.includes('flex_sdk')) {
+        if (binStatus.flexSdk.installed && binStatus.flexSdk.path) {
+          resolvedSdkPath = binStatus.flexSdk.path
+        }
       }
 
       let compilerPath = path.join(resolvedSdkPath, 'bin', process.platform === 'win32' ? 'mxmlc.bat' : 'mxmlc')

@@ -206,5 +206,17 @@ contextBridge.exposeInMainWorld('electronAPI', {
   isLicenseActivated: () => ipcRenderer.invoke('license:isActivated'),
   getDeviceFingerprint: () => ipcRenderer.invoke('license:deviceFingerprint'),
   getDeviceId: () => ipcRenderer.invoke('license:deviceId'),
+
+  // Binaries Downloader
+  getBinaryStatus: () => ipcRenderer.invoke('binaries:status'),
+  checkDiskSpace: () => ipcRenderer.invoke('binaries:check-disk-space'),
+  downloadBinaries: () => ipcRenderer.invoke('binaries:download'),
+  cancelBinariesDownload: () => ipcRenderer.invoke('binaries:download-cancel'),
+  selectLocalBinary: (type: 'jre' | 'ffdec' | 'flexSdk') => ipcRenderer.invoke('binaries:select-local', type),
+  onDownloaderProgress: (callback: (data: any) => void) => {
+    const subscription = (_event: any, data: any) => callback(data)
+    ipcRenderer.on('downloader:progress', subscription)
+    return () => { ipcRenderer.removeListener('downloader:progress', subscription) }
+  }
 })
 

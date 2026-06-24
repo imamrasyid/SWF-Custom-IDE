@@ -73,9 +73,33 @@ function showTamperDialog(message: string): void {
   }
 }
 
+function isLicenseDisabled(): boolean {
+  if (process.env.DISABLE_LICENSE === 'true') {
+    return true
+  }
+  try {
+    const possibleEnvPaths = [
+      path.join(process.cwd(), '.env'),
+      path.join(app?.getAppPath() || '', '.env'),
+      path.join(path.dirname(app?.getPath('exe') || ''), '.env')
+    ]
+    for (const envPath of possibleEnvPaths) {
+      if (envPath && fs.existsSync(envPath)) {
+        const content = fs.readFileSync(envPath, 'utf8')
+        if (/^\s*DISABLE_LICENSE\s*=\s*true/m.test(content)) {
+          return true
+        }
+      }
+    }
+  } catch (e) {
+    // Ignore errors
+  }
+  return false
+}
+
 function performStartupChecks(): boolean {
-  if (!TAMPER_CHECK_ENABLED) {
-    console.log('[Tamper] Tamper check disabled (development mode)')
+  if (!TAMPER_CHECK_ENABLED || isLicenseDisabled()) {
+    console.log('[Tamper] Tamper check disabled (development mode or disabled via config)')
     return true
   }
 
@@ -91,12 +115,32 @@ function performStartupChecks(): boolean {
     return false
   }
 
-  const buildHashFile = path.join(path.dirname(process.execPath), 'app.asar.unpacked', '.integrity')
+  let buildHashFile = path.join(path.dirname(process.execPath), 'resources', 'app.asar.unpacked', 'dist-electron', '.integrity')
+  if (!fs.existsSync(buildHashFile)) {
+    buildHashFile = path.join(path.dirname(process.execPath), 'app.asar.unpacked', 'dist-electron', '.integrity')
+  }
+  if (!fs.existsSync(buildHashFile)) {
+    buildHashFile = path.join(path.dirname(process.execPath), 'resources', 'app.asar.unpacked', '.integrity')
+  }
+  if (!fs.existsSync(buildHashFile)) {
+    buildHashFile = path.join(path.dirname(process.execPath), 'app.asar.unpacked', '.integrity')
+  }
+
   if (fs.existsSync(buildHashFile)) {
     try {
-      const storedHash = fs.readFileSync(buildHashFile, 'utf-8').trim()
+      const storedHashStr = fs.readFileSync(buildHashFile, 'utf-8').trim()
+      let expectedHash = storedHashStr
+      try {
+        const integrityObj = JSON.parse(storedHashStr)
+        if (integrityObj && typeof integrityObj === 'object') {
+          expectedHash = integrityObj['main.js'] || expectedHash
+        }
+      } catch {
+        // Fallback if not JSON
+      }
+
       const currentHash = calculateFileHash(require.resolve('./main'))
-      if (currentHash && storedHash !== currentHash) {
+      if (currentHash && expectedHash !== currentHash) {
         console.error('[Security] File integrity check failed!')
         showTamperDialog('Application files have been modified. Please reinstall the application.')
         return false
@@ -112,7 +156,7 @@ function performStartupChecks(): boolean {
 let periodicCheckTimer: ReturnType<typeof setInterval> | null = null
 
 function startPeriodicChecks(): void {
-  if (!TAMPER_CHECK_ENABLED) return
+  if (!TAMPER_CHECK_ENABLED || isLicenseDisabled()) return
 
   periodicCheckTimer = setInterval(() => {
     if (checkDevTools()) {

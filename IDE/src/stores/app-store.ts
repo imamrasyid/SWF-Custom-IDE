@@ -21,6 +21,8 @@ import { createGitSlice } from './slices/git-slice'
 import type { GitSlice } from './slices/git-slice'
 import { createLicenseSlice } from './slices/license-slice'
 import type { LicenseSlice } from './slices/license-slice'
+import { createBinariesSlice } from './slices/binaries-slice'
+import type { BinariesSlice } from './slices/binaries-slice'
 
 export type ModuleName =
   | 'explorer'
@@ -65,7 +67,8 @@ export interface AppState
     UpdateSlice,
     FileSlice,
     GitSlice,
-    LicenseSlice {
+    LicenseSlice,
+    BinariesSlice {
   activeModule: ModuleName | null
   setActiveModule: (module: string) => void
 }
@@ -84,7 +87,8 @@ export const useAppStore = create<AppState>()((...a) => ({
   ...createUpdateSlice(...a),
   ...createFileSlice(...a),
   ...createGitSlice(...a),
-  ...createLicenseSlice(...a)
+  ...createLicenseSlice(...a),
+  ...createBinariesSlice(...a)
 }))
 
 useAppStore.getState().loadPersistedState()
